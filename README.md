@@ -8,31 +8,17 @@ I'll use JSON webtokens (JWTs) reinforced by refresh_tokens.
 
 ### TO DO:
  * suspend IP address if too many failed attempts
- * Containerize with Docker
- * move env variable from .env to somewhere more secure for production
- * Make tests
- * When a person tries to register on a site, but they're already registered on another, just log them in
- * * This will create a refresh token for THAT site
- * * I don't think they can auto-log in to ALL sites. They must log in to get the JWT cookie.
- * * So each site will have its own expiry for refresh tokens.
- * * BUT logging out of one will log out of all.
- * * Maybe logging IN to one should extend the expiry of all? But only those that already exist.
  * Email verification of accounts (with Mailjet https://www.mailjet.com/pricing/)
- * Integrate payment APIs (probably with reqwest crate)
- * * Integrate Stripe for payments
- * * Accept crypto currency with a 3rd party API (like coinbase)
+ * Integrate donations (only after multiple games)
  * Give user "lang" option in the DB
  * Turn on Content-Encoding: gzip
  * Modal popup demands confirmation before generating new client_secret
  * Write an essay about the auth flow between instances to help remember the details.
- * Apply regex check to logo url in "edit client site" page
  * JWT EXPIRED notice arrives too many times. Route or middleware being hit too many times.
  * * Depends on what page you're on.
  * Register must also send you to game (and also set those cookies locally)
  * Move login/register logic into auth.rs module.
  * * Don't return http stuff to the route function. Just return the data that the user needs.
- * Maybe gamify donations instead of demanding tickets?
- * * Badges etc.
  * Add developer blog
  * Terms and Conditions for signup
  * Table for site_info

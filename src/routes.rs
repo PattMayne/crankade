@@ -831,7 +831,7 @@ pub async fn login_page(
             }
         };
 
-    let selected_client_id = match &query.client_id {
+    let selected_client_id: String = match &query.client_id {
         Some(client_id) => client_id.to_owned(),
         None => "".to_string()
     };
@@ -854,12 +854,35 @@ pub async fn login_page(
 
 
 /* REGISTER PAGE ROUTE FUNCTION */
-pub async fn register_page(req: HttpRequest) -> impl Responder {
+pub async fn register_page(
+    pool: web::Data<MySqlPool>,
+    req: HttpRequest,
+    query: web::Query<LoginQuery>
+) -> impl Responder {
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+
+        // Get client site references to list on login site
+    let client_refs: Vec<db::ClientRef> =
+        match db::get_client_refs(&pool).await {
+            Ok(refs) => refs,
+            Err(e) => {
+                eprintln!("Error retrieving client references: {e}");
+                Vec::new()
+            }
+        };
+    
+    
+    let selected_client_id: String = match &query.client_id {
+        Some(client_id) => client_id.to_owned(),
+        None => "".to_string()
+    };
+
 
     let register_template: RegisterTemplate = RegisterTemplate {
         texts: RegisterTexts::new(&user_req_data),
-        user: user_req_data
+        user: user_req_data,
+        client_refs,
+        selected_client_id
     };
 
     HttpResponse::Ok()

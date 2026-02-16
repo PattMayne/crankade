@@ -360,6 +360,8 @@ pub struct EditClientTemplate {
 pub struct RegisterTemplate {
     pub texts: RegisterTexts,
     pub user: auth::UserReqData,
+    pub client_refs: Vec<db::ClientRef>,
+    pub selected_client_id: String,
 }
 
 

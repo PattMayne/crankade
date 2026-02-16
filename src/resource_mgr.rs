@@ -129,7 +129,8 @@ pub struct RegisterTexts {
     pub email: String,
     pub password: String,
     pub register_btn: String,
-    pub nav: NavTexts
+    pub sites: String,
+    pub nav: NavTexts,
 }
 
 impl RegisterTexts {
@@ -141,6 +142,7 @@ impl RegisterTexts {
         let email: String = get_translation("register.email.label", lang, None);
         let password: String = get_translation("register.password.label", lang, None);
         let register_btn: String = get_translation("register.btn", lang, None);
+        let sites: String = get_translation("login.client_site.label", lang, None);
         let nav = NavTexts::new(lang);
 
         RegisterTexts {
@@ -150,7 +152,8 @@ impl RegisterTexts {
             email,
             password,
             register_btn,
-            nav
+            nav,
+            sites
         }
     }
 }

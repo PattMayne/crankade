@@ -30,6 +30,21 @@
                             </div>
                             <div class="large-4 medium-6 small-12 cell">
                                 <h4>{{ texts.title }}</h4>
+
+                                <label>
+                                    {{ texts.sites }}
+                                    <select id="client_id" name="client_id">
+                                        {% for client_ref in client_refs %}
+                                            <option
+                                                value="{{client_ref.client_id}}"
+                                                {% if client_ref.client_id == selected_client_id %}
+                                                    SELECTED
+                                                {% endif %}
+                                            >{{client_ref.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+
                                 <label>
                                     {{ texts.username }}
                                     <input id="username" name="username" type="text" />

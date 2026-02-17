@@ -327,6 +327,7 @@ pub struct LoginTemplate {
     pub client_refs: Vec<db::ClientRef>,
     pub login_is_available: bool,
     pub selected_client_id: String,
+    pub querystring: String,
 }
 
 #[derive(Template)]
@@ -362,6 +363,7 @@ pub struct RegisterTemplate {
     pub user: auth::UserReqData,
     pub client_refs: Vec<db::ClientRef>,
     pub selected_client_id: String,
+    pub querystring: String,
 }
 
 

@@ -836,6 +836,10 @@ pub async fn login_page(
         None => "".to_string()
     };
 
+    let querystring: String = if selected_client_id.chars().count() > 0 
+        { format!("{}{}", "?client_id=", selected_client_id) }
+        else { "".to_string() };
+
     // Make sure there's a site to login to.
     let login_is_available: bool = client_refs.len() > 0;
 
@@ -845,6 +849,7 @@ pub async fn login_page(
         client_refs,
         login_is_available,
         selected_client_id,
+        querystring
     };
 
     HttpResponse::Ok()
@@ -877,12 +882,17 @@ pub async fn register_page(
         None => "".to_string()
     };
 
+    let querystring: String = if selected_client_id.chars().count() > 0 
+        { format!("{}{}", "?client_id=", selected_client_id) }
+        else { "".to_string() };
+
 
     let register_template: RegisterTemplate = RegisterTemplate {
         texts: RegisterTexts::new(&user_req_data),
         user: user_req_data,
         client_refs,
-        selected_client_id
+        selected_client_id,
+        querystring
     };
 
     HttpResponse::Ok()

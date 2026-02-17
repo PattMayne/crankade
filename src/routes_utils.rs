@@ -214,6 +214,7 @@ pub struct RegisterCredentials {
     pub username: String,
     pub email: String,
     pub password: String,
+    pub client_id: String,
 }
 
 

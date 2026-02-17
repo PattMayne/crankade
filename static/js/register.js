@@ -19,12 +19,14 @@ const submit_register = async () => {
     const pass_element = document.getElementById("password")
     const username_element = document.getElementById("username")
     const email_element = document.getElementById("email")
+    const client_id_element = document.getElementById("client_id")
 
     // get data (values) from input elements
     const creds = {
         password: pass_element.value.trim(),
         email: email_element.value.trim(),
-        username: username_element.value.trim()
+        username: username_element.value.trim(),
+        client_id: client_id_element.value.trim()
     }
 
     // Check the inputs
@@ -72,12 +74,14 @@ const submit_register = async () => {
                 throw new Error("Inputs invalid or server error.")
             }
             return response.json()
-        }).then(user => {
+        }).then(data => {
             // THIS WILL BE AUTH DATA NOT USER (change "user" to "auth_data")
-            console.log("User data: ", user)
+            console.log("Incoming data: ", data)
             // do something with the user
-            if(!!user.user_id){
+            if (!!data.user_id || !!data.username){
                 window.location.href = "/dashboard";
+            } else if (!!data.redirect_uri) {
+                window.location.href = data.redirect_uri
             }
         }).catch(error => {
             console.log('Error: ', error)

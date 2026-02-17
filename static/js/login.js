@@ -57,7 +57,7 @@ const submit_login = async () => {
             if (!!data.username){
                 window.location.href = "/dashboard";
             } else if (!!data.redirect_uri) {
-                window.location.href = data.redirect_uri;
+                window.location.href = data.redirect_uri
             }
             
         }).catch(error => {

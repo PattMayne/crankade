@@ -7,22 +7,19 @@ An authentication app I will use to serve a few web apps and games I intend to m
 I'll use JSON webtokens (JWTs) reinforced by refresh_tokens.
 
 ### TO DO:
- * suspend IP address if too many failed attempts
- * Email verification of accounts (with Mailjet https://www.mailjet.com/pricing/)
- * Integrate donations (only after multiple games)
- * Give user "lang" option in the DB
- * Turn on Content-Encoding: gzip
  * Modal popup demands confirmation before generating new client_secret
- * Write an essay about the auth flow between instances to help remember the details.
- * JWT EXPIRED notice arrives too many times. Route or middleware being hit too many times.
- * * Depends on what page you're on.
- * Register must also send you to game (and also set those cookies locally)
- * Move login/register logic into auth.rs module.
- * * Don't return http stuff to the route function. Just return the data that the user needs.
  * Add developer blog
  * Terms and Conditions for signup
  * Table for site_info
  * * "singleton" style... all text... key-value
+ * Email verification of accounts (with Mailjet https://www.mailjet.com/pricing/)
+ * Integrate donations (only after multiple games)
+ * Turn on Content-Encoding: gzip
+ * Write an essay about the auth flow between instances to help remember the details.
+ * JWT EXPIRED notice arrives too many times. Route or middleware being hit too many times.
+ * * Depends on what page you're on.
+ * Move login/register logic into auth.rs module.
+ * * Don't return http stuff to the route function. Just return the data that the user needs.
  * Forgot Password option
 
 ### Client Tokens Structure:

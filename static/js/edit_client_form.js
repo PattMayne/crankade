@@ -130,6 +130,8 @@ const request_new_secret = async () => {
         msgs.push(message)
         show_msg_box()
     })
+
+    hide_confirm_box()
 }
 
 
@@ -150,9 +152,31 @@ const show_msg_box = () => {
     msg_box.style.display = ""
 }
 
+const show_confirm_box = () => {
+    const confirm_box = document.getElementById("confirm_box")
+    const gray_wrapper = document.getElementById("gray_wrapper")
+    confirm_box.classList.remove('no_display')
+    gray_wrapper.classList.remove('no_display')
+}
+
+const hide_confirm_box = () => {
+    const confirm_box = document.getElementById("confirm_box")
+    const gray_wrapper = document.getElementById("gray_wrapper")
+    confirm_box.classList.add('no_display')
+    gray_wrapper.classList.add('no_display')
+}
+
 
 // Add event listeners
-document.addEventListener('DOMContentLoaded', () => hide_msg_box())
+document.addEventListener('DOMContentLoaded', () => {
+    hide_msg_box()
+
+    const confirm_box = document.getElementById("confirm_box")
+    const req_secret_button = document.getElementById("req_secret_button")
+    const cancel_button = document.getElementById("cancel_button")
+    cancel_button.addEventListener('click', () => hide_confirm_box())
+    req_secret_button.addEventListener('click', () => show_confirm_box())
+})
 
 // Make functions available to the HTML elements (via window)
 window.submit_data = submit_data

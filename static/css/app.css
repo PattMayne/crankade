@@ -150,4 +150,30 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 100%;
 }
 
+#confirm_box {
+  width: 400px;
+  max-width: 100%;
+  height: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 700;
+}
+
+#gray_wrapper {
+  display: inline;
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 500;
+}
+
+.no_display {
+  display: none !important;
+}
+
 /*# sourceMappingURL=app.css.map */

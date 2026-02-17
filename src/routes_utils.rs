@@ -18,7 +18,7 @@
 
 
 use actix_web::{
-    HttpResponse, HttpRequest, web::Redirect,
+    HttpResponse, HttpRequest, web::Redirect, web,
     Responder, http::StatusCode, http::header };
 use actix_web::cookie::{ Cookie };
 use askama::Template;
@@ -29,10 +29,11 @@ use sqlx::{MySqlPool };
 use crate::{
     db, utils,
     auth::{ self, UserReqData },
+    resources::get_translation,
     resource_mgr::{
         HomeTexts, LoginTexts, RegisterTexts, AdminTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
-        ErrorData
+        ErrorData, error_by_code
      }
 };
 
@@ -406,7 +407,97 @@ pub struct DashboardTemplate<'a> {
  * 
  * 
  * 
+*/
+
+pub async fn get_server_error(req: &HttpRequest) -> HttpResponse {
+    // Worse than not finding something. Something broke.
+    let code: u16 = 500;
+    let lang: &utils::SupportedLangs = &auth::get_user_req_data(req).clone_lang();
+    let error: String = error_by_code(code.to_string(), &lang).to_string();
+    HttpResponse::InternalServerError().json(ErrorResponse { error, code })
+    
+}
+
+/**
+ * Login and Register both end up with this authentication flow.
  */
+pub async fn authenticate_user_response(
+    req: HttpRequest,
+    user: db::User,
+    pool: web::Data<MySqlPool>,
+    client_id: String,
+) -> HttpResponse {
+    let server_error: HttpResponse = get_server_error(&req).await;
+    // get cookies for local login
+    let two_auth_cookies: TwoAuthCookies =
+        match get_user_auth_cookies(&pool, &user).await {
+            Ok(cookies) => cookies,
+            Err(error_response) => 
+                return HttpResponse::InternalServerError()
+                    .json(error_response)
+        };
+
+    /* 
+     * IF client_id is auth_site login now and redirect
+     */
+    if client_id == utils::auth_client_id() {
+        // User may now receive JWT and refresh token.
+        return HttpResponse::Ok()
+            .cookie(two_auth_cookies.jwt_cookie)
+            .cookie(two_auth_cookies.refresh_token_cookie)
+            .json(FreshLoginData {
+                username: user.get_username().to_owned()
+        });
+    }
+
+    // It's an external site. So let's get an auth_token and redirect
+    let auth_code: String = match db::add_auth_code(
+        &pool,
+        user.get_id(),
+        &client_id,
+        auth::generate_auth_code()
+    ).await {
+        Ok(code) => code,
+        Err(_e) => return server_error
+    };
+
+    println!("Auth code: {}", auth_code);
+
+    let redirect_uri_option: Option<String>  =
+        match db::get_redirect_uri(&pool, &client_id).await {
+            Ok(option) => option,
+            Err(_e) => return server_error
+    };
+
+    match redirect_uri_option {
+        Some(redirect_uri) => {
+            /* we have the code and the redirect_uri.
+             * Build the full URL with querystring and send to frontend for redirect.
+             */
+            let query_key_string: &str = "?code=";
+            let full_uri: FullRedirectUri = FullRedirectUri {
+                redirect_uri: format!("{}{}{}",
+                    &redirect_uri,
+                    query_key_string,
+                    &auth_code
+            )};
+
+            // Set cookies.
+            HttpResponse::Ok()
+                .cookie(two_auth_cookies.jwt_cookie)
+                .cookie(two_auth_cookies.refresh_token_cookie)
+                .json(full_uri)
+        },
+        None => {
+            let code: u16 = 404;
+            let lang: &utils::SupportedLangs =
+                &auth::get_user_req_data(&req).clone_lang();
+            let error: String = get_translation(
+                "err.404.title", &lang, None);
+            HttpResponse::NotFound().json(ErrorResponse { error, code })
+        }
+    }
+}
 
 
 /**

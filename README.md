@@ -7,7 +7,6 @@ An authentication app I will use to serve a few web apps and games I intend to m
 I'll use JSON webtokens (JWTs) reinforced by refresh_tokens.
 
 ### TO DO:
- * Modal popup demands confirmation before generating new client_secret
  * Add developer blog
  * Terms and Conditions for signup
  * Table for site_info

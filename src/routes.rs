@@ -280,6 +280,53 @@ async fn req_secret_post(
  * data is legit, then adds it to the database.
  * Lots of opportunities to send errors.
  */
+#[post("/add_post")]
+async fn new_blog_post(
+    pool: web::Data<MySqlPool>,
+    req: HttpRequest,
+    mut inputs: web::Json<PostBody>
+) -> HttpResponse {
+    println!("here");
+    let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+    // check if they're admin
+    if let Some(redirect_resp) = redirect_non_admin(&user_req_data, &req) {
+        return redirect_resp;
+    }
+
+    // Trim the body string
+    inputs.trim_body();
+
+    // Add the post to the database
+    let post_succes_obj: BlogPostSuccess = match db::add_post(
+        &pool,
+        &inputs.post_body,
+        user_req_data.username.unwrap()
+    ).await {
+        Ok(_id) => {
+            BlogPostSuccess {
+                success: true,
+                message: "Blog post created".to_string()
+            }
+        },
+        Err(e) => {
+            eprintln!("{}", e);
+            BlogPostSuccess {
+                success: false,
+                message: "ERROR: Blog post NOT SAVED".to_string()
+            }
+        }
+    };
+
+    HttpResponse::Ok().json(post_succes_obj)
+}
+
+
+/**
+ * The post route for adding new CLIENT SITE to the database.
+ * Checks that the user is truly an admin, checks that all the 
+ * data is legit, then adds it to the database.
+ * Lots of opportunities to send errors.
+ */
 #[post("/add_client")]
 async fn new_client_post(
     pool: web::Data<MySqlPool>,

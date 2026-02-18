@@ -52,7 +52,7 @@ const submit_data = async () => {
         category: category,
         client_type: client_type,
         is_active: is_active
-    };
+    }
 
     /*  KEEPING THE FETCH STUFF IN COMMENTS FOR LATER ADAPTATION */
 

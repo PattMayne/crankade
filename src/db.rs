@@ -748,6 +748,33 @@ pub async fn add_external_client(
     Ok(result.rows_affected())
 }
 
+
+/**
+ * Add a new post to the dev_blog
+ */
+pub async fn add_post(
+    pool: &MySqlPool,
+    post_body: &String,
+    author_name: String
+) -> Result<u64, anyhow::Error> {
+
+    // We trust that the data has already been checked. We simply enter it like obedient robots now.
+    // Except that we will turn the bool into an int.
+    let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
+    "INSERT INTO dev_blog (
+            body,
+            author_name
+        ) VALUES (?, ?)")
+        .bind(post_body)
+        .bind(author_name)
+        .execute(pool).await.map_err(|e| {
+            eprintln!("Failed to save NEW POST to database: {:?}", e);
+            anyhow!("Could not save NEW POST to database: {e}")
+        })?;
+    
+    Ok(result.last_insert_id())
+}
+
 /* 
  * 
  * 

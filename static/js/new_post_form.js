@@ -30,20 +30,20 @@ const submit_data = async () => {
     }
 
     const data = {
-        post_body: post_body
-    };
+        post_body: post_body,
+    }
 
     console.log("Post body is: " + data.post_body)
-    return
 
     /*  KEEPING THE FETCH STUFF IN COMMENTS FOR LATER ADAPTATION */
 
     // now send it to the login route
-    const route = "/admin/add_client"
+    const route = "/admin/add_post"
 
     await utils.fetch_json_post(route, data)
         .then(response => {
             if(!response.ok) {
+                console.log("NOT OK")
                 response.json().then(data => {
                     if (!!data.code && data.code == 403 || data.code == 401) {
                         const redirect_uri = "/error/" + data.code;
@@ -56,17 +56,12 @@ const submit_data = async () => {
                     }
                 })
 
-                throw new Error("Could not add client site, or server error.")
+                throw new Error("Could not add blog post, or server error.")
             }
             return response.json()
-        }).then(secret_data => {
-            console.log("secret_data: ", secret_data.raw_client_secret)
-            if(!!secret_data.raw_client_secret){
-                const secret_message = "Here is the CLIENT_SECRET for the new domain. " +
-                    "We will never show this again, so COPY IT NOW and put it in " +
-                    "the environment variables of the new client site."
-                msgs.push(secret_message)
-                msgs.push(secret_data.raw_client_secret)
+        }).then(response => {
+            if(!!response.message){
+                msgs.push(response.message)
                 show_msg_box()
             }
             

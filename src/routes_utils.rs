@@ -63,6 +63,13 @@ use crate::{
 
 
 #[derive(Serialize)]
+pub struct BlogPostSuccess {
+    pub success: bool,
+    pub message: String,
+}
+
+
+#[derive(Serialize)]
 pub struct UserData {
     pub user_id: i32,
     pub username: String,
@@ -246,6 +253,17 @@ pub struct ClientDataReq {
     pub client_id: String,
 }
 
+
+#[derive(Deserialize)]
+pub struct PostBody {
+    pub post_body: String,
+}
+
+impl PostBody {
+    pub fn trim_body(&mut self) {
+        self.post_body = self.post_body.trim().to_string();
+    }
+}
 
 #[derive(Deserialize)]
 pub struct ClientInputs {

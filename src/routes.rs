@@ -24,6 +24,7 @@ use actix_web::cookie::{ Cookie };
 use askama::Template;
 use sqlx::{ MySqlPool };
 
+use crate::resource_mgr::NewPostTexts;
 // local modules, loaded as crates (declared as mods in main.rs)
 use crate::{
     resources::get_translation,
@@ -877,6 +878,27 @@ pub async fn new_client_site_form_page(req: HttpRequest) -> impl Responder {
         .body(new_client_template.render().unwrap())
 }
 
+
+/**
+ * Show the page where the user can create a new post
+ */
+#[get("/new_post")]
+pub async fn new_post_page(req: HttpRequest) -> impl Responder {
+    let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+
+    // check if they're admin
+    if let Some(redirect_resp) = redirect_non_admin(&user_req_data, &req) {
+        return redirect_resp;
+    }
+    
+    let new_post_template: NewPostTemplate = NewPostTemplate {
+        texts: NewPostTexts::new(&user_req_data),
+        user: user_req_data
+    };
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(new_post_template.render().unwrap())
+}
 
 /**
  * The page where an admin can EDIT information for an EXISTING client site.

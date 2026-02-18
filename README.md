@@ -8,9 +8,8 @@ I'll use JSON webtokens (JWTs) reinforced by refresh_tokens.
 
 ### TO DO:
  * Add developer blog
- * Terms and Conditions for signup
- * Table for site_info
- * * "singleton" style... all text... key-value
+ * Terms and Conditions for signup (in phf_map)
+ * Change "hide/show" to method that adds/removes hidden class.
  * Email verification of accounts (with Mailjet https://www.mailjet.com/pricing/)
  * Integrate donations (only after multiple games)
  * Turn on Content-Encoding: gzip

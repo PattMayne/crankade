@@ -118,6 +118,10 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
     "edit_client.message.en" => "Update existing client.",
     "edit_client.message.fr" => "Mettez à jour le client existant.",
 
+    // NEW POST
+    "new_post.title.en" => "NEW BLOG POST",
+    "new_post.title.fr" => "NOUVEAU POST D'BLOGUETTE !",
+
     // CLIENT FORM LABELS (for both NEW and EDIT)
     "clientform.domain.en" => "Site Domain:",
     "clientform.domain.fr" => "Domaine du site:",

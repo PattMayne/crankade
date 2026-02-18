@@ -195,6 +195,30 @@ impl AdminTexts {
 
 
 /**
+ * route: get "/admin/new_post"
+ */
+pub struct NewPostTexts {
+    pub title: String,
+    pub nav: NavTexts,
+}
+
+
+impl NewPostTexts {
+    pub fn new(user_req_data: &UserReqData) -> NewPostTexts {
+        let lang: &SupportedLangs = &user_req_data.lang;
+        let title: String = get_translation(
+            "new_post.title", &user_req_data.lang, None);
+        let nav: NavTexts = NavTexts::new(lang);
+
+        NewPostTexts {
+            title,
+            nav
+        }
+    }
+}
+
+
+/**
  * route: get "/admin/new_client"
  */
 pub struct NewClientTexts {
@@ -228,7 +252,7 @@ impl NewClientTexts {
         let desc: String = get_translation("clientform.desc", lang, None);
         let is_active: String = get_translation("clientform.isactive", lang, None);
         let submit_btn: String = get_translation("clientform.submit", lang, None);
-        let nav = NavTexts::new(lang);
+        let nav: NavTexts = NavTexts::new(lang);
 
         NewClientTexts {
             title,

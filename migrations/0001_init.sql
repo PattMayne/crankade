@@ -55,3 +55,12 @@ CREATE TABLE IF NOT EXISTS client_sites (
     is_internal BOOL NOT NULL DEFAULT FALSE, -- only "TRUE" for self (auth site, this site)
     created_timestamp TIMESTAMP NOT NULL DEFAULT UTC_TIMESTAMP
 );
+
+
+CREATE TABLE dev_blog (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    author_name VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
+    created_timestamp TIMESTAMP NOT NULL DEFAULT UTC_TIMESTAMP,
+    updated_timestamp TIMESTAMP NOT NULL DEFAULT UTC_TIMESTAMP
+);

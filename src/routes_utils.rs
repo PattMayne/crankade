@@ -33,6 +33,7 @@ use crate::{
     resource_mgr::{
         HomeTexts, LoginTexts, RegisterTexts, AdminTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
+        NewPostTexts,
         ErrorData, error_by_code
      }
 };
@@ -347,6 +348,15 @@ pub struct NewClientTemplate {
     pub user: auth::UserReqData,
     pub texts: NewClientTexts,
 }
+
+
+#[derive(Template)]
+#[template(path ="new_post.html")]
+pub struct NewPostTemplate {
+    pub user: auth::UserReqData,
+    pub texts: NewPostTexts,
+}
+
 
 
 #[derive(Template)]

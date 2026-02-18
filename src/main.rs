@@ -72,6 +72,7 @@ async fn main() -> std::io::Result<()> {
                     .route("/dashboard", web::get().to(routes::admin_home))
                     .route("/new_client", web::get().to(routes::new_client_site_form_page))
                     .service(routes::new_client_post)
+                    .service(routes::new_post_page)
                     .service(routes::update_client_post)
                     .service(routes::edit_client_site_form_page)
                     .service(routes::req_secret_post)

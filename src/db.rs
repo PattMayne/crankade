@@ -51,7 +51,6 @@ pub struct AuthCodeData {
     pub expires_timestamp: OffsetDateTime
 }
 
-
 #[derive(serde::Serialize)]
 pub struct User {
     id: i32,
@@ -63,6 +62,16 @@ pub struct User {
     password_hash: String,
     created_timestamp: OffsetDateTime,
     email_verified: i8 // actually a bool but mysql doesn't do "real" bools
+}
+
+
+#[derive(serde::Serialize)]
+pub struct BlogPost {
+    pub id: i32,
+    pub body: String,
+    pub author_name: String,
+    pub created_timestamp: OffsetDateTime,
+    pub updated_timestamp: OffsetDateTime,
 }
 
 
@@ -284,7 +293,23 @@ pub async fn get_auth_code_data(
             FROM auth_codes WHERE code = ?",
             code
         ).fetch_optional(pool).await?)
- }
+}
+
+
+
+pub async fn get_post(
+    pool: &MySqlPool,
+    post_id: i64
+) -> Result<Option<BlogPost>> {
+    Ok(sqlx::query_as!(
+            BlogPost,
+            "SELECT id, author_name, body, created_timestamp, updated_timestamp
+            FROM dev_blog WHERE id = ?",
+            post_id
+        ).fetch_optional(pool).await?)
+}
+
+
 
 
 pub async fn get_user_by_username(

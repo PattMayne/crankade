@@ -219,6 +219,30 @@ impl NewPostTexts {
 
 
 /**
+ * route: get "/admin/edit_post"
+ */
+pub struct EditPostTexts {
+    pub title: String,
+    pub nav: NavTexts,
+}
+
+
+impl EditPostTexts {
+    pub fn new(user_req_data: &UserReqData) -> EditPostTexts {
+        let lang: &SupportedLangs = &user_req_data.lang;
+        let title: String = get_translation(
+            "edit_post.title", &user_req_data.lang, None);
+        let nav: NavTexts = NavTexts::new(lang);
+
+        EditPostTexts {
+            title,
+            nav
+        }
+    }
+}
+
+
+/**
  * route: get "/admin/new_client"
  */
 pub struct NewClientTexts {

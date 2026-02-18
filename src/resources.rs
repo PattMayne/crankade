@@ -122,6 +122,10 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
     "new_post.title.en" => "NEW BLOG POST",
     "new_post.title.fr" => "NOUVEAU POST D'BLOGUETTE !",
 
+    // EDIT POST
+    "edit_post.title.en" => "EDIT BLOG POST",
+    "edit_post.title.fr" => "EDIT POST D'BLOGUETTE !",
+
     // CLIENT FORM LABELS (for both NEW and EDIT)
     "clientform.domain.en" => "Site Domain:",
     "clientform.domain.fr" => "Domaine du site:",

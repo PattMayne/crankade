@@ -947,6 +947,52 @@ pub async fn new_post_page(req: HttpRequest) -> impl Responder {
         .body(new_post_template.render().unwrap())
 }
 
+
+/**
+ * Show the page where the user can create a new post
+ */
+#[get("/edit_post/{id}")]
+pub async fn edit_post_page(
+    pool: web::Data<MySqlPool>,
+    req: HttpRequest,
+    post_id_obj: web::Path<PostId>
+) -> impl Responder {
+    let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+
+    // check if they're admin
+    if let Some(redirect_resp) = redirect_non_admin(&user_req_data, &req) {
+        return redirect_resp;
+    }
+
+    let error_response: ErrorResponse = ErrorResponse {
+        error: "Error retrieving post".to_string(),
+        code: 404
+    };
+
+    // Get the requested post
+    let post_obj_result: Result<Option<db::BlogPost>, anyhow::Error> =
+        db::get_post(&pool, post_id_obj.id).await;
+
+    if post_obj_result.is_err() {
+        return HttpResponse::Unauthorized().json(error_response)
+    }
+
+    match post_obj_result.unwrap() {
+        Some(post) => {
+            let edit_post_template: EditPostTemplate = EditPostTemplate {
+                texts: NewPostTexts::new(&user_req_data),
+                user: user_req_data,
+                post_body: post.body
+            };
+
+            HttpResponse::Ok()
+                .content_type("text/html")
+                .body(edit_post_template.render().unwrap())
+        },
+        None => HttpResponse::Unauthorized().json(error_response)
+    }
+}
+
 /**
  * The page where an admin can EDIT information for an EXISTING client site.
  * This is just the form. Another (post) function will receive the data

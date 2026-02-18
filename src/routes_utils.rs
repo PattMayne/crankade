@@ -136,6 +136,11 @@ pub struct UpdateData {
     pub success: bool,
 }
 
+#[derive(Deserialize)]
+pub struct PostId {
+    pub id: i64,
+}
+
 #[derive(Serialize)]
 pub struct FullRedirectUri {
     pub redirect_uri: String,
@@ -373,6 +378,15 @@ pub struct NewClientTemplate {
 pub struct NewPostTemplate {
     pub user: auth::UserReqData,
     pub texts: NewPostTexts,
+}
+
+
+#[derive(Template)]
+#[template(path ="edit_post.html")]
+pub struct EditPostTemplate {
+    pub user: auth::UserReqData,
+    pub texts: NewPostTexts,
+    pub post_body: String,
 }
 
 

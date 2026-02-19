@@ -7,7 +7,7 @@ An authentication app I will use to serve a few web apps and games I intend to m
 I'll use JSON webtokens (JWTs) reinforced by refresh_tokens.
 
 ### TO DO:
- * Add developer blog
+ * "We use cookies" warning
  * Terms and Conditions for signup (in phf_map)
  * Change "hide/show" to method that adds/removes hidden class.
  * Email verification of accounts (with Mailjet https://www.mailjet.com/pricing/)

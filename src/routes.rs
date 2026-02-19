@@ -926,10 +926,16 @@ pub async fn admin_home(
             }
         };
 
+    let posts: Vec<db::BlogPost> = match db::get_posts(&pool).await {
+        Ok(b_posts) => b_posts,
+        Err(_e) => return return_error_page(&req, 404)
+    };
+
     let admin_template: AdminTemplate = AdminTemplate {
         texts: AdminTexts::new(&user_req_data),
         user: user_req_data,
-        client_refs
+        client_refs,
+        posts
     };
 
     HttpResponse::Ok()

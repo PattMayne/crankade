@@ -389,6 +389,7 @@ pub struct AdminTemplate {
     pub texts: AdminTexts,
     pub user: auth::UserReqData,
     pub client_refs: Vec<db::ClientRef>,
+    pub posts: Vec<db::BlogPost>,
 }
 
 

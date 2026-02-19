@@ -17,31 +17,44 @@
         <div class="grid-x grid-padding-x">
             <div class="large-12 cell">
                 <h1>{{ texts.title }}</h1>
-                <p>
-                    {{ texts.message }}
-                </p>
             </div>
 
-            <div class="large-12 cell">
+            <div class="large-4 medium-6 small-12 cell">
 
                 <div class="callout primary">
-                    <h4>{{ texts.actions_label }}</h4>
-
-                    <h6>{{ texts.edit_clients_label }}</h6>
+                    <h5>{{ texts.edit_clients_label }}</h5>
                     {% for client_ref in client_refs  %}
                         <a
                         href="/admin/edit_client/{{ client_ref.client_id }}"
                         class="button small"
                         >{{ client_ref.name }}</a>
                     {% endfor %}
-                    <br/>
+                    <hr/>
+                    <h5>OTHER ADMIN ACTIONS</h5>
                     <a href="/admin/new_client"
                         class="button small">{{ texts.new_client_btn }}</a>
+                    <br />
+                    <a href="/admin/new_post"
+                        class="button small">NEW DEV BLOG POST</a>
                 </div>
 
                 <!-- message box -->
                 <div class="callout primary" id="msg_box"></div>
 
+            </div>
+
+            <div class="large-8 medium-6 small-12 cell">
+                <h4>DEV BLOG POSTS</h4></h4>
+                {% if posts.len() > 0 %}
+                {% for post in posts %}
+                    <div class="large-6 medium-6 small-12 cell">
+                        <a href="/admin/edit_post/{{ post.id }}"
+                            class="button small">{{ post.title }}</a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                [NONE]
+                {% endif %}
             </div>
         </div> <!-- end of grid-x -->
 

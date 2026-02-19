@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(255) NOT NULL DEFAULT 'player',
     created_timestamp TIMESTAMP NOT NULL DEFAULT UTC_TIMESTAMP,
-    email_verified BOOL NOT NULL DEFAULT FALSE
+    email_verified BOOL NOT NULL DEFAULT FALSE,
+    has_agreed_terms BOOL NOT NULL DEFAULT FALSE
 );
 
 

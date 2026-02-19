@@ -272,6 +272,22 @@ impl BlogPostData {
     }
 }
 
+
+#[derive(Deserialize)]
+pub struct BlogPostUpdateData {
+    pub post_id: i64,
+    pub post_title: String,
+    pub post_body: String,
+}
+
+impl BlogPostUpdateData {
+    pub fn trim_all_strings(&mut self) {
+        self.post_title = self.post_title.trim().to_string();
+        self.post_body = self.post_body.trim().to_string();
+    }
+}
+
+
 #[derive(Deserialize)]
 pub struct ClientInputs {
     pub site_domain: String,
@@ -388,6 +404,8 @@ pub struct NewPostTemplate {
 pub struct EditPostTemplate {
     pub user: auth::UserReqData,
     pub texts: NewPostTexts,
+    pub post_id: i64,
+    pub post_title: String,
     pub post_body: String,
 }
 

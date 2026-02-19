@@ -17,7 +17,7 @@
         <div class="grid-x grid-padding-x">
             <div class="large-7 medium-10 small-12 cell">
                 <h1>{{ texts.title }}</h1>
-                <input type="text" id="title" placeholder="TITLE" />
+                <input type="text" id="title" cols="50" placeholder="TITLE" value="{{ post_title }}" />
                 <p>Use HTML for formatting of post body.</p>
                 <textarea id="post_body" cols="50">{{ post_body }}</textarea>
 
@@ -29,6 +29,8 @@
                 </div>
             </div>
 
+            <input type="hidden" id="post_id" value="{{ post_id }}" />
+
         </div> <!-- end of grid-x -->
 
     </div><!-- end of grid-container -->
@@ -36,7 +38,7 @@
         <script src="/static/js/vendor/jquery.js"></script>
         <script src="/static/js/vendor/what-input.js"></script>
         <script src="/static/js/vendor/foundation.min.js"></script>
-        <script type="module" src="/static/js/edit_post.js?id=0"></script>
+        <script type="module" src="/static/js/edit_post.js?id=041"></script>
     </body>
 
 

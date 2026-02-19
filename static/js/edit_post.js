@@ -19,6 +19,7 @@ const submit_data = async () => {
     // Gather data 
     const post_body = document.getElementById("post_body").value.trim()
     const post_title = document.getElementById("title").value.trim()
+    const post_id = document.getElementById("post_id").value
 
     // make sure required fields are not empty
     let required_fields_are_filled = post_body != ""
@@ -31,6 +32,7 @@ const submit_data = async () => {
     }
 
     const data = {
+        post_id: parseInt(post_id, 10),
         post_title: post_title,
         post_body: post_body,
     }

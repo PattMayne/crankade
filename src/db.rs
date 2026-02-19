@@ -870,6 +870,31 @@ pub async fn update_real_names(
 }
 
 
+/**
+ * Update blog post
+ */
+pub async fn update_post(
+    pool: &MySqlPool,
+    post_id: i64,
+    post_title: &String,
+    post_body: &String,
+) -> Result<i32, anyhow::Error> {
+    let result = sqlx::query(
+        "UPDATE dev_blog SET title = ?, body = ? WHERE id = ?")
+            .bind(post_title)
+            .bind(post_body)
+            .bind(post_id)
+            .execute(pool)
+            .await?;
+
+    Ok(result.rows_affected() as i32)
+}
+
+
+
+/**
+ * update just the "client_secret" field of a registered client site.
+ */
 pub async fn update_client_secret(
     pool: &MySqlPool,
     client_id: &String,
@@ -884,6 +909,7 @@ pub async fn update_client_secret(
 
     Ok(result.rows_affected() as i32)
 }
+
 
 
 /**

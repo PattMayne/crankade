@@ -604,6 +604,50 @@ pub async fn update_password(
 }
 
 
+
+#[post("/update_post")]
+pub async fn update_blog_post(
+    pool: web::Data<MySqlPool>,
+    req: HttpRequest,
+    mut blog_post_data: web::Json<BlogPostUpdateData>
+) -> HttpResponse {
+    println!("here");
+    let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+    // check if they're admin
+    if let Some(redirect_resp) = redirect_non_admin(&user_req_data, &req) {
+        return redirect_resp;
+    }
+
+    // Trim the body string
+    blog_post_data.trim_all_strings();
+
+    // Add the post to the database
+    let post_succes_obj: BlogPostSuccess = match db::update_post(
+        &pool,
+        blog_post_data.post_id,
+        &blog_post_data.post_title,
+        &blog_post_data.post_body
+    ).await {
+        Ok(_rows_affected) => {
+            BlogPostSuccess {
+                success: true,
+                message: "Blog post updated".to_string()
+            }
+        },
+        Err(e) => {
+            eprintln!("DB ERROR: {}", e);
+            BlogPostSuccess {
+                success: false,
+                message: "DATABASE ERROR: Blog post NOT UPDATED".to_string()
+            }
+        }
+    };
+
+    HttpResponse::Ok().json(post_succes_obj)
+}
+
+
+
 #[post("/update_names")]
 pub async fn update_names(
     pool: web::Data<MySqlPool>,
@@ -613,50 +657,45 @@ pub async fn update_names(
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
 
     // make sure user is logged in
-    let user_id = match user_req_data.id {
+    let user_id: i32 = match user_req_data.id {
         Some(id) => id,
         None => return return_authentication_err_json()
     };
-
-    match db::get_user_by_id(&pool, user_id).await {
-        Ok(Some(_user)) => {
-            // User is real user
-            // get json from the req, and names from json
-            // check names for length. Send back if too long or short
-
-            // check credentials against regex and size ranges
-            let names_valid: bool = utils::validate_real_name(&names.first_name) &&
-                utils::validate_real_name(&names.last_name);
-
-            if !names_valid {
-                // One of the fields doesn't match the regex
-                let bad_names_data: BadNames = BadNames::new(422);
-                return HttpResponse::build(StatusCode::UNPROCESSABLE_ENTITY)
-                    .json(bad_names_data);
-            }
-
-            // Names are valid. Update the DB
-            let update_names_result: Result<i32, anyhow::Error> =
-                db::update_real_names(
-                    &pool,
-                    &names.first_name,
-                    &names.last_name,
-                    user_id
-            ).await;
-            
-            match update_names_result {
-                Ok(rows_affected) => {
-                    return HttpResponse::Ok()
-                        .json(UpdateData::new(rows_affected > 0));
-                },
-                Err(_e) => {
-                    return return_internal_err_json();
-                }
-            }
-        },
-        Ok(None) => return return_authentication_err_json(),
-        Err(_e) => return return_authentication_err_json()
+    
+    // get out if err or none
+    let _user: db::User = match db::get_user_by_id(&pool, user_id).await {
+        Ok(Some(user)) => user,
+        _ => return return_authentication_err_json(),
     };
+
+    // User is real user
+    // get json from the req, and names from json
+    // check names for length. Send back if too long or short
+
+    // check credentials against regex and size ranges
+    let names_valid: bool = utils::validate_real_name(&names.first_name) &&
+        utils::validate_real_name(&names.last_name);
+
+    if !names_valid {
+        // One of the fields doesn't match the regex
+        let bad_names_data: BadNames = BadNames::new(422);
+        return HttpResponse::build(StatusCode::UNPROCESSABLE_ENTITY)
+            .json(bad_names_data);
+    }
+
+    // Names are valid. Update the DB
+    let update_names_result: Result<i32, anyhow::Error> =
+        db::update_real_names(
+            &pool,
+            &names.first_name,
+            &names.last_name,
+            user_id
+    ).await;
+    
+    match update_names_result {
+        Ok(rows_affected) => HttpResponse::Ok().json(UpdateData::new(rows_affected > 0)),
+        Err(_e) => return return_internal_err_json()
+    }
 }
 
 
@@ -983,7 +1022,9 @@ pub async fn edit_post_page(
             let edit_post_template: EditPostTemplate = EditPostTemplate {
                 texts: NewPostTexts::new(&user_req_data),
                 user: user_req_data,
-                post_body: post.body
+                post_id: post_id_obj.id,
+                post_body: post.body,
+                post_title: post.title
             };
 
             HttpResponse::Ok()

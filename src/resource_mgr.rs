@@ -70,7 +70,7 @@ impl HomeTexts {
             "home.greeting",
             lang,
             Some(&[&user_req_data.get_role()]));
-        let nav = NavTexts::new(lang);
+        let nav: NavTexts = NavTexts::new(lang);
 
         HomeTexts {
             title,
@@ -103,7 +103,7 @@ impl LoginTexts {
         let password: String = get_translation("login.password.label", lang, None);
         let login_btn: String = get_translation("login.btn", lang, None);
         let sites: String = get_translation("login.client_site.label", lang, None);
-        let nav = NavTexts::new(lang);
+        let nav: NavTexts = NavTexts::new(lang);
 
         LoginTexts {
             title,
@@ -143,7 +143,7 @@ impl RegisterTexts {
         let password: String = get_translation("register.password.label", lang, None);
         let register_btn: String = get_translation("register.btn", lang, None);
         let sites: String = get_translation("login.client_site.label", lang, None);
-        let nav = NavTexts::new(lang);
+        let nav: NavTexts = NavTexts::new(lang);
 
         RegisterTexts {
             title,
@@ -243,6 +243,29 @@ impl EditPostTexts {
 
 
 /**
+ * route: get "/blog"
+ */
+pub struct BlogTexts {
+    pub title: String,
+    pub nav: NavTexts
+}
+
+impl BlogTexts {
+    pub fn new(user_req_data: &UserReqData) -> BlogTexts {
+        let lang: &SupportedLangs = &user_req_data.lang;
+        let title: String = get_translation("blog.title", lang, None);
+        let nav: NavTexts = NavTexts::new(lang);
+
+        BlogTexts {
+            title,
+            nav
+        }
+    }
+}
+
+
+
+/**
  * route: get "/admin/new_client"
  */
 pub struct NewClientTexts {
@@ -333,7 +356,7 @@ impl EditClientTexts {
         let is_active: String = get_translation("clientform.isactive", lang, None);
         let save_btn: String = get_translation("clientform.save_changes", lang, None);
         let new_scret_btn: String = get_translation("clientform.gen_secret", lang, None);
-        let nav = NavTexts::new(lang);
+        let nav: NavTexts = NavTexts::new(lang);
 
 
         EditClientTexts {
@@ -365,11 +388,8 @@ pub struct ErrorTexts {
 
 impl ErrorTexts {
     pub fn new(user_req_data: &UserReqData) -> ErrorTexts {
-        let nav = NavTexts::new(&user_req_data.lang);
-
-        ErrorTexts {
-            nav
-        }
+        let nav: NavTexts = NavTexts::new(&user_req_data.lang);
+        ErrorTexts { nav }
     }
 }
 
@@ -444,6 +464,7 @@ impl DashboardTexts {
  */
 pub struct NavTexts {
     pub home: &'static str,
+    pub blog: &'static str,
     pub admin: &'static str,
     pub dashboard: &'static str,
     pub login: &'static str,
@@ -462,6 +483,7 @@ impl NavTexts {
         let lang_suffix: &str = lang.suffix();
 
         let home_key: String = format!("{}.{}", "nav.home", lang_suffix);
+        let blog_key: String = format!("{}.{}", "nav.blog", lang_suffix);
         let admin_key: String = format!("{}.{}", "nav.admin", lang_suffix);
         let dash_key: String = format!("{}.{}", "nav.dashboard", lang_suffix);
         let login_key: String = format!("{}.{}", "nav.login", lang_suffix);
@@ -469,6 +491,7 @@ impl NavTexts {
         let logout_key: String = format!("{}.{}", "nav.logout", lang_suffix);
 
         let home: &'static str = raw_trans_or_missing(home_key.as_str(), lang);
+        let blog: &'static str = raw_trans_or_missing(blog_key.as_str(), lang);
         let admin: &'static str = raw_trans_or_missing(admin_key.as_str(), lang);
         let dashboard: &'static str = raw_trans_or_missing(dash_key.as_str(), lang);
         let login: &'static str = raw_trans_or_missing(login_key.as_str(), lang);
@@ -482,6 +505,7 @@ impl NavTexts {
             login,
             register,
             logout,
+            blog,
         }
     }
 }

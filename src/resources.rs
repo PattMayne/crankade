@@ -106,6 +106,10 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
     "register.btn.en" => "REGISTER",
     "register.btn.fr" => "INSCRIPTION",
 
+    // DEV BLOG
+    "blog.title.en" => "DEVELOPER BLOG",
+    "blog.title.fr" => "BLOG DU DÉVELOPPEUR",
+
     // NEW CLIENT SITE
     "new_client.title.en" => "NEW CLIENT SITE",
     "new_client.title.fr" => "NOUVEAU SITE CLIENT",
@@ -156,6 +160,8 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
     // NAV BUTTONS
     "nav.home.en" => "HOME",
     "nav.home.fr" => "ACCUEIL",
+    "nav.blog.en" => "BLOG",
+    "nav.blog.fr" => "BLOG",
     "nav.admin.en" => "ADMIN",
     "nav.admin.fr" => "ADMIN",
     "nav.login.en" => "LOGIN",

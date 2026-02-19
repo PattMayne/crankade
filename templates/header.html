@@ -2,6 +2,7 @@
     <div class="top-bar-right">
         <ul class="menu">
             <li><a href="/" class="button small nav-button">{{texts.nav.home}}</a></li>
+            <li><a href="/blog" class="button small nav-button">{{texts.nav.blog}}</a></li>
             {% if user.logged_in %}
                 {% if user.role == "admin" %}
                     <li><a href="/admin" class="button small nav-button" id="admin_nav_button">

@@ -1,7 +1,7 @@
 // I'm actually using MariaDB which is supposedly a drop-in replacement for MySQL
 
 use sqlx::{MySqlPool };
-use time::{ OffsetDateTime, Duration };
+use time::{ OffsetDateTime, Duration, macros::format_description };
 use anyhow::{ Result, anyhow };
 use serde;
 
@@ -73,6 +73,15 @@ pub struct BlogPost {
     pub author_name: String,
     pub created_timestamp: OffsetDateTime,
     pub updated_timestamp: OffsetDateTime,
+}
+
+
+impl BlogPost {
+    pub fn get_formatted_updated_timestamp(&self) -> String {
+        let format: &[time::format_description::BorrowedFormatItem<'_>] =
+            format_description!("[year]-[month]-[day] [hour]:[minute]");
+        self.updated_timestamp.format(&format).unwrap()
+    }
 }
 
 
@@ -298,7 +307,7 @@ pub async fn get_auth_code_data(
 
 
 
-pub async fn get_post(
+pub async fn get_post_by_id(
     pool: &MySqlPool,
     post_id: i64
 ) -> Result<Option<BlogPost>> {
@@ -309,6 +318,21 @@ pub async fn get_post(
             post_id
         ).fetch_optional(pool).await?)
 }
+
+
+
+pub async fn get_posts(
+    pool: &MySqlPool
+) -> Result<Vec<BlogPost>> {
+    let blog_posts: Vec<BlogPost> = sqlx::query_as!(
+        BlogPost,
+        "SELECT id, author_name, title, body, created_timestamp, updated_timestamp
+        FROM dev_blog ORDER BY created_timestamp ASC"
+    ).fetch_all(pool).await?;
+
+    Ok(blog_posts)
+}
+
 
 
 
@@ -879,10 +903,14 @@ pub async fn update_post(
     post_title: &String,
     post_body: &String,
 ) -> Result<i32, anyhow::Error> {
+    let update_time: OffsetDateTime = OffsetDateTime::now_utc();
     let result = sqlx::query(
-        "UPDATE dev_blog SET title = ?, body = ? WHERE id = ?")
+        "UPDATE dev_blog 
+            SET title = ?, body = ?, updated_timestamp = ? 
+            WHERE id = ?")
             .bind(post_title)
             .bind(post_body)
+            .bind(update_time)
             .bind(post_id)
             .execute(pool)
             .await?;

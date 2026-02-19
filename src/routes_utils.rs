@@ -31,7 +31,7 @@ use crate::{
     auth::{ self, UserReqData },
     resources::get_translation,
     resource_mgr::{
-        HomeTexts, LoginTexts, RegisterTexts, AdminTexts,
+        HomeTexts, LoginTexts, RegisterTexts, AdminTexts, BlogTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
         NewPostTexts,
         ErrorData, error_by_code
@@ -360,6 +360,15 @@ pub struct HomeTemplate {
     pub texts: HomeTexts,
     pub user: auth::UserReqData,
     pub client_links: Vec<db::ClientLinkData>,
+}
+
+
+#[derive(Template)]
+#[template(path ="dev_blog.html")]
+pub struct BlogTemplate {
+    pub texts: BlogTexts,
+    pub user: auth::UserReqData,
+    pub posts: Vec<db::BlogPost>,
 }
 
 

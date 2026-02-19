@@ -24,7 +24,7 @@ use actix_web::cookie::{ Cookie };
 use askama::Template;
 use sqlx::{ MySqlPool };
 
-use crate::resource_mgr::NewPostTexts;
+use crate::resource_mgr::{BlogTexts, NewPostTexts};
 // local modules, loaded as crates (declared as mods in main.rs)
 use crate::{
     resources::get_translation,
@@ -987,6 +987,28 @@ pub async fn new_post_page(req: HttpRequest) -> impl Responder {
         .body(new_post_template.render().unwrap())
 }
 
+#[get("/blog")]
+pub async fn blog(
+    pool: web::Data<MySqlPool>,
+    req: HttpRequest
+) -> HttpResponse {
+    let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+
+    let posts: Vec<db::BlogPost> = match db::get_posts(&pool).await {
+        Ok(b_posts) => b_posts,
+        Err(_e) => return return_error_page(&req, 404)
+    };
+
+    let dev_blog_template: BlogTemplate = BlogTemplate {
+        posts,
+        texts: BlogTexts::new(&user_req_data),
+        user: user_req_data
+    };
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(dev_blog_template.render().unwrap())
+}
+
 
 /**
  * Show the page where the user can create a new post
@@ -1011,7 +1033,7 @@ pub async fn edit_post_page(
 
     // Get the requested post
     let post_obj_result: Result<Option<db::BlogPost>, anyhow::Error> =
-        db::get_post(&pool, post_id_obj.id).await;
+        db::get_post_by_id(&pool, post_id_obj.id).await;
 
     if post_obj_result.is_err() {
         return HttpResponse::Unauthorized().json(error_response)

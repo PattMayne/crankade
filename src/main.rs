@@ -49,6 +49,7 @@ async fn main() -> std::io::Result<()> {
             .service(Files::new("/static", "./static"))
             .wrap(from_fn(middleware::login_status_middleware))
             .service(routes::home)
+            .service(routes::blog)
             .service(routes::dashboard_page)
             .service(routes::error_root)
             .service(routes::error_root_2)

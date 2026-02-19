@@ -68,6 +68,7 @@ pub struct User {
 #[derive(serde::Serialize)]
 pub struct BlogPost {
     pub id: i32,
+    pub title: String,
     pub body: String,
     pub author_name: String,
     pub created_timestamp: OffsetDateTime,
@@ -303,7 +304,7 @@ pub async fn get_post(
 ) -> Result<Option<BlogPost>> {
     Ok(sqlx::query_as!(
             BlogPost,
-            "SELECT id, author_name, body, created_timestamp, updated_timestamp
+            "SELECT id, author_name, title, body, created_timestamp, updated_timestamp
             FROM dev_blog WHERE id = ?",
             post_id
         ).fetch_optional(pool).await?)
@@ -779,6 +780,7 @@ pub async fn add_external_client(
  */
 pub async fn add_post(
     pool: &MySqlPool,
+    post_title: &String,
     post_body: &String,
     author_name: String
 ) -> Result<u64, anyhow::Error> {
@@ -787,9 +789,9 @@ pub async fn add_post(
     // Except that we will turn the bool into an int.
     let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
     "INSERT INTO dev_blog (
-            body,
-            author_name
-        ) VALUES (?, ?)")
+            title, body, author_name
+        ) VALUES (?, ?, ?)")
+        .bind(post_title)
         .bind(post_body)
         .bind(author_name)
         .execute(pool).await.map_err(|e| {

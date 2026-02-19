@@ -284,7 +284,7 @@ async fn req_secret_post(
 async fn new_blog_post(
     pool: web::Data<MySqlPool>,
     req: HttpRequest,
-    mut inputs: web::Json<PostBody>
+    mut blog_post_data: web::Json<BlogPostData>
 ) -> HttpResponse {
     println!("here");
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
@@ -294,12 +294,13 @@ async fn new_blog_post(
     }
 
     // Trim the body string
-    inputs.trim_body();
+    blog_post_data.trim_all_strings();
 
     // Add the post to the database
     let post_succes_obj: BlogPostSuccess = match db::add_post(
         &pool,
-        &inputs.post_body,
+        &blog_post_data.post_title,
+        &blog_post_data.post_body,
         user_req_data.username.unwrap()
     ).await {
         Ok(_id) => {

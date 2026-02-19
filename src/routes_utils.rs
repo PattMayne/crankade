@@ -260,12 +260,14 @@ pub struct ClientDataReq {
 
 
 #[derive(Deserialize)]
-pub struct PostBody {
+pub struct BlogPostData {
+    pub post_title: String,
     pub post_body: String,
 }
 
-impl PostBody {
-    pub fn trim_body(&mut self) {
+impl BlogPostData {
+    pub fn trim_all_strings(&mut self) {
+        self.post_title = self.post_title.trim().to_string();
         self.post_body = self.post_body.trim().to_string();
     }
 }

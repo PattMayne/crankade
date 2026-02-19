@@ -31,6 +31,9 @@ export const name_range_err_msg = "Names must be 2 to 50 characters in length"
 export const new_client_req_fields_msg = "Site domain, name, auth_id, redirect_uri, " +
     "and type must not be empty. Also, redirect_uri and domain must be valid."
 
+export const agreements_msg = "You must agree to the terms and conditions, privacy policy, " +
+    "and to receive essential emails for account management."
+
 // Make sure password matches regex and length requirements
 export const check_password = (password, err_msgs) => {
     const password_is_legit = password_regex.test(password) &&
@@ -49,6 +52,12 @@ export const check_email = (email, err_msgs) => {
     return email_is_legit
 }
 
+
+// Make sure user has agreed to all conditions
+export const check_consent = (all_agreed, err_msgs) => {
+    if (!all_agreed) { err_msgs.push(agreements_msg) }
+    return all_agreed
+}
 
 // Make sure username matches regex and length requirements
 export const check_username = (username, err_msgs) => {

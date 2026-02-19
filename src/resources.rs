@@ -175,14 +175,22 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
 
     // TERMS & CONDITIONS ETC (will use HTML)
 
-    "terms.en" => "These are the terms and conditions.",
-    "terms.fr" => "These are the terms and conditions <i>in French</i>.",
+    "terms.body.en" => "These are the terms and conditions.",
+    "terms.body.fr" => "These are the terms and conditions <i>in French</i>.",
+    "terms.label.en" => "I have read and agree to the&nbsp;",
+    "terms.label.fr" => "I have read and agree to the&nbsp;",
+    "terms.linktext.en" => "Terms and Conditions",
+    "terms.linktext.fr" => "Terms and Conditions",
 
-    "privacy.en" => "This is the privacy policy.",
-    "privacy.fr" => "This is the privacy policy <i>in French</i>.",
+    "privacy.body.en" => "This is the privacy policy.",
+    "privacy.body.fr" => "This is the privacy policy <i>in French</i>.",
+    "privacy.label.en" => "I have read and agree to the&nbsp;",
+    "privacy.label.fr" => "I have read and agree to the&nbsp;",
+    "privacy.linktext.en" => "Privacy Policy",
+    "privacy.linktext.fr" => "Privacy Policy",
 
-    "emailconsent.en" => "I consent to receive essential emails for account management.",
-    "emailconsent.fr" => "I consent to receive essential emails for account management <i>in French</i>.",
+    "emailconsent.label.en" => "I consent to receive essential emails for account management.",
+    "emailconsent.label.fr" => "I consent to receive essential emails for account management <i>in French</i>.",
 
     // ERROR CODES AND TITLES FOR ERROR PAGE
     "err.400.title.en" => "Bad Request",

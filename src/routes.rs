@@ -24,7 +24,7 @@ use actix_web::cookie::{ Cookie };
 use askama::Template;
 use sqlx::{ MySqlPool };
 
-use crate::resource_mgr::{BlogTexts, NewPostTexts};
+use crate::resource_mgr::{AgreementTexts, BlogTexts, NewPostTexts};
 // local modules, loaded as crates (declared as mods in main.rs)
 use crate::{
     resources::get_translation,
@@ -32,7 +32,7 @@ use crate::{
     resource_mgr::{
         HomeTexts, LoginTexts, RegisterTexts, AdminTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
-        ErrorData, error_by_code
+        ErrorData
      },
      auth_code_shared::{
         AuthCodeSuccess,
@@ -128,7 +128,8 @@ async fn register_post(
         &pool,
         &info.username,
         &info.email,
-        info.password.clone()
+        info.password.clone(),
+        info.has_agreed_terms
     ).await;
 
     let user_id: i32 = match user_id_result {
@@ -887,11 +888,12 @@ pub async fn register_page(
         else { "".to_string() };
 
     let register_template: RegisterTemplate = RegisterTemplate {
+        agreements: AgreementTexts::new(&user_req_data.lang),
         texts: RegisterTexts::new(&user_req_data),
         user: user_req_data,
         client_refs,
         selected_client_id,
-        querystring
+        querystring,
     };
 
     HttpResponse::Ok()

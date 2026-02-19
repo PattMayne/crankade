@@ -1,6 +1,5 @@
 $(document).foundation()
 import * as utils from './utils.js'
-import { logout } from './globals.js'
 
 /**
  * Functions for the user registration input page.
@@ -21,18 +20,29 @@ const submit_register = async () => {
     const email_element = document.getElementById("email")
     const client_id_element = document.getElementById("client_id")
 
+    // agreements
+    const terms_check = document.getElementById("terms_check")
+    const privacy_check = document.getElementById("privacy_check")
+    const email_consent_check = document.getElementById("email_consent_check")
+    const all_checked = terms_check.checked && privacy_check.checked && email_consent_check.checked
+
     // get data (values) from input elements
     const creds = {
         password: pass_element.value.trim(),
         email: email_element.value.trim(),
         username: username_element.value.trim(),
-        client_id: client_id_element.value.trim()
+        client_id: client_id_element.value.trim(),
+        has_agreed_terms: all_checked
     }
+
+    // const ch_msgg = all_checked ? "ALL CHECKED" : "NOT ALL CHECKED"
+    // console.log(ch_msgg)
 
     // Check the inputs
     let all_fields_legit = utils.check_username(creds.username, err_msgs)
     all_fields_legit = utils.check_password(creds.password, err_msgs) && all_fields_legit
     all_fields_legit = utils.check_email(creds.email, err_msgs) && all_fields_legit
+    all_fields_legit = utils.check_consent(creds.has_agreed_terms, err_msgs) && all_fields_legit
 
     // if any checks failed, show the error and return
     if (!all_fields_legit) {

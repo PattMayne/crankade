@@ -25,6 +25,7 @@ use askama::Template;
 use serde::{ Deserialize, Serialize };
 use sqlx::{MySqlPool };
 
+use crate::resource_mgr::AgreementTexts;
 // local modules, loaded as crates (declared as mods in main.rs)
 use crate::{
     db, utils,
@@ -229,6 +230,7 @@ pub struct RegisterCredentials {
     pub email: String,
     pub password: String,
     pub client_id: String,
+    pub has_agreed_terms: bool,
 }
 
 
@@ -438,6 +440,7 @@ pub struct RegisterTemplate {
     pub client_refs: Vec<db::ClientRef>,
     pub selected_client_id: String,
     pub querystring: String,
+    pub agreements: AgreementTexts,
 }
 
 

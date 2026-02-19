@@ -613,18 +613,22 @@ pub async fn add_user(
     pool: &MySqlPool,
     username: &String,
     email: &String,
-    password: String
+    password: String,
+    has_agreed_terms: bool
 ) -> Result<i32, anyhow::Error> {
     let password_hash: String = auth::hash_password(password);
+
     let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
         "INSERT INTO users (
             username,
             email,
-            password_hash)
-        VALUES (?, ?, ?)")
+            password_hash,
+            has_agreed_terms)
+        VALUES (?, ?, ?, ?)")
     .bind(username)
     .bind(email)
     .bind(&password_hash)
+    .bind(has_agreed_terms)
     .execute(pool).await.map_err(|e| {
         eprintln!("Failed to save user to database: {:?}", e);
         anyhow!("Could not save user to database: {e}")

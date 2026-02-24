@@ -512,10 +512,8 @@ impl NavTexts {
 
 
 pub struct AgreementTexts {
-    pub terms_body: &'static str,
     pub terms_label: &'static str,
     pub terms_link: &'static str,
-    pub privacy_body: &'static str,
     pub privacy_label: &'static str,
     pub privacy_link: &'static str,
     pub email_consent_label: &'static str,
@@ -531,27 +529,21 @@ impl AgreementTexts {
     pub fn new(lang: &SupportedLangs) -> AgreementTexts {
         let lang_suffix: &str = lang.suffix();
 
-        let terms_body_key: String = format!("{}.{}", "terms.body", lang_suffix);
         let terms_label_key: String = format!("{}.{}", "terms.label", lang_suffix);
         let terms_link_key: String = format!("{}.{}", "terms.linktext", lang_suffix);
-        let privacy_body_key: String = format!("{}.{}", "privacy.body", lang_suffix);
         let privacy_label_key: String = format!("{}.{}", "privacy.label", lang_suffix);
         let privacy_link_key: String = format!("{}.{}", "privacy.linktext", lang_suffix);
         let email_consent_label_key: String = format!("{}.{}", "emailconsent.label", lang_suffix);
 
-        let terms_body: &'static str = raw_trans_or_missing(terms_body_key.as_str(), lang);
         let terms_label: &'static str = raw_trans_or_missing(terms_label_key.as_str(), lang);
         let terms_link: &'static str = raw_trans_or_missing(terms_link_key.as_str(), lang);
-        let privacy_body: &'static str = raw_trans_or_missing(privacy_body_key.as_str(), lang);
         let privacy_label: &'static str = raw_trans_or_missing(privacy_label_key.as_str(), lang);
         let privacy_link: &'static str = raw_trans_or_missing(privacy_link_key.as_str(), lang);
         let email_consent_label: &'static str = raw_trans_or_missing(email_consent_label_key.as_str(), lang);
 
         AgreementTexts {
-            terms_body,
             terms_label,
             terms_link,
-            privacy_body,
             privacy_label,
             privacy_link,
             email_consent_label,

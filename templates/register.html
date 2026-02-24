@@ -66,11 +66,11 @@
 
                                 <label for="terms_check">
                                     <input type="checkbox" id="terms_check" name="terms_check" value="terms" />
-                                    {{ agreements.terms_label | safe }}<a href="#terms">[{{ agreements.terms_link }}]</a>.
+                                    {{ agreements.terms_label | safe }}<a href="/static/terms.html" target="blank">[{{ agreements.terms_link }}]</a>.
                                 </label>
                                 <label for="privacy_check">
                                     <input type="checkbox" id="privacy_check" name="privacy_check" value="privacy" />
-                                    {{ agreements.privacy_label | safe }}<a href="#privacy">[{{ agreements.privacy_link }}]</a>.
+                                    {{ agreements.privacy_label | safe }}<a href="/static/privacy.html" target="blank">[{{ agreements.privacy_link }}]</a>.
                                 </label>
                                 <label for="email_consent_check">
                                 <input
@@ -99,25 +99,6 @@
                 </div>
             </div>
 
-            <div class="large-3 medium-3 cell hide-for-small-only">
-                &nbsp;
-            </div>
-
-            <div class="large-6 medium-6 small-12 cell">
-                <div class="callout primary">
-                    <h3 id="terms">{{ agreements.terms_link }}</h3>
-                    {{ agreements.terms_body }}
-                </div>
-                <div class="callout primary">
-                    <h3 id="privacy">{{ agreements.privacy_link }}</h3>
-                    {{ agreements.privacy_body }}
-                </div>
-            </div>
-
-            
-            <div class="large-3 medium-3 cell hide-for-small-only">
-                &nbsp;
-            </div>
 
         </div> <!-- end of grid-x -->
 

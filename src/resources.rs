@@ -173,17 +173,13 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
     "nav.dashboard.en" => "DASHBOARD",
     "nav.dashboard.fr" => "TABLEAU DE BORD",
 
-    // TERMS & CONDITIONS ETC (will use HTML)
+    // TERMS & CONDITIONS ETC (using HTML for actual body)
 
-    "terms.body.en" => "These are the terms and conditions.",
-    "terms.body.fr" => "These are the terms and conditions <i>in French</i>.",
     "terms.label.en" => "I have read and agree to the&nbsp;",
     "terms.label.fr" => "I have read and agree to the&nbsp;",
     "terms.linktext.en" => "Terms and Conditions",
     "terms.linktext.fr" => "Terms and Conditions",
 
-    "privacy.body.en" => "This is the privacy policy.",
-    "privacy.body.fr" => "This is the privacy policy <i>in French</i>.",
     "privacy.label.en" => "I have read and agree to the&nbsp;",
     "privacy.label.fr" => "I have read and agree to the&nbsp;",
     "privacy.linktext.en" => "Privacy Policy",

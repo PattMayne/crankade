@@ -176,17 +176,17 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
     // TERMS & CONDITIONS ETC (using HTML for actual body)
 
     "terms.label.en" => "I have read and agree to the&nbsp;",
-    "terms.label.fr" => "I have read and agree to the&nbsp;",
+    "terms.label.fr" => "J'ai lu et accepte les&nbsp;",
     "terms.linktext.en" => "Terms and Conditions",
-    "terms.linktext.fr" => "Terms and Conditions",
+    "terms.linktext.fr" => "Conditions générales",
 
     "privacy.label.en" => "I have read and agree to the&nbsp;",
-    "privacy.label.fr" => "I have read and agree to the&nbsp;",
+    "privacy.label.fr" => "J'ai lu et accepte la&nbsp;",
     "privacy.linktext.en" => "Privacy Policy",
-    "privacy.linktext.fr" => "Privacy Policy",
+    "privacy.linktext.fr" => "Politique de confidentialité",
 
     "emailconsent.label.en" => "I consent to receive essential emails for account management.",
-    "emailconsent.label.fr" => "I consent to receive essential emails for account management <i>in French</i>.",
+    "emailconsent.label.fr" => "J'accepte de recevoir des emails essentiels pour la gestion du compte.",
 
     // ERROR CODES AND TITLES FOR ERROR PAGE
     "err.400.title.en" => "Bad Request",

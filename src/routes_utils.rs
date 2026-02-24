@@ -502,7 +502,6 @@ pub async fn authenticate_user_response(
     pool: web::Data<MySqlPool>,
     client_id: String,
 ) -> HttpResponse {
-    let server_error: HttpResponse = get_server_error(&req).await;
     // get cookies for local login
     let two_auth_cookies: TwoAuthCookies =
         match get_user_auth_cookies(&pool, &user).await {
@@ -513,19 +512,54 @@ pub async fn authenticate_user_response(
         };
 
     /* 
-     * IF client_id is auth_site login now and redirect
+     * Either log the user in locally,
+     * or send them to their chosen client site.
      */
     if client_id == utils::auth_client_id() {
+        // client_id is auth_site login now and redirect
         // User may now receive JWT and refresh token.
-        return HttpResponse::Ok()
+        HttpResponse::Ok()
             .cookie(two_auth_cookies.jwt_cookie)
             .cookie(two_auth_cookies.refresh_token_cookie)
             .json(FreshLoginData {
                 username: user.get_username().to_owned()
-        });
+        })
+    } else {
+        // It's an external site. So let's get an auth_token and redirect
+        post_auth_client_site_redirect(
+            req, user,
+            pool, client_id,
+            Some(two_auth_cookies)
+        ).await
     }
+}
 
-    // It's an external site. So let's get an auth_token and redirect
+
+/**
+ * We have checked the user's login credentials.
+ * The user wants to login on an external site.
+ * We will STILL log them in locally, but then also send them
+ * to the client site.
+ */
+pub async fn post_auth_client_site_redirect(
+    req: HttpRequest,
+    user: db::User,
+    pool: web::Data<MySqlPool>,
+    client_id: String,
+    cookies_option: Option<TwoAuthCookies>
+) -> HttpResponse {
+    let server_error: HttpResponse = get_server_error(&req).await;
+    // extract or create cookies for local login
+    let two_auth_cookies: TwoAuthCookies = match cookies_option {
+        Some(cookies) => cookies,
+        None => match get_user_auth_cookies(&pool, &user).await {
+            Ok(cookies) => cookies,
+            Err(error_response) => 
+                return HttpResponse::InternalServerError()
+                    .json(error_response)
+        }
+    };
+
     let auth_code: String = match db::add_auth_code(
         &pool,
         user.get_id(),
@@ -536,8 +570,6 @@ pub async fn authenticate_user_response(
         Err(_e) => return server_error
     };
 
-    println!("Auth code: {}", auth_code);
-
     let redirect_uri_option: Option<String>  =
         match db::get_redirect_uri(&pool, &client_id).await {
             Ok(option) => option,
@@ -547,8 +579,7 @@ pub async fn authenticate_user_response(
     match redirect_uri_option {
         Some(redirect_uri) => {
             /* we have the code and the redirect_uri.
-             * Build the full URL with querystring and send to frontend for redirect.
-             */
+             * Build the full URL with querystring and send to frontend for redirect. */
             let query_key_string: &str = "?code=";
             let full_uri: FullRedirectUri = FullRedirectUri {
                 redirect_uri: format!("{}{}{}",
@@ -557,7 +588,7 @@ pub async fn authenticate_user_response(
                     &auth_code
             )};
 
-            // Set cookies.
+            // Set local cookies.
             HttpResponse::Ok()
                 .cookie(two_auth_cookies.jwt_cookie)
                 .cookie(two_auth_cookies.refresh_token_cookie)

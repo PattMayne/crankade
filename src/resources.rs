@@ -256,6 +256,10 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
     "err.invalid_creds.fr" => "Identifiants invalides.",
     "err.user_not_found.en" => "User not found.",
     "err.user_not_found.fr" => "Utilisateur non trouvé.",
+
+    // FRONT PAGE DEFAULT TEXT
+    "frontpage.en" => "CRANKADE is the central hub for where I (Matt Payne) will host any web apps and games that I want to share with you. Right now there's just one: CRANKWORD, a multi-player, turn-based word-guessing game. Please enjoy!",
+    "frontpage.fr" => "CRANKADE est le centre central où je (Matt Payne) hébergerai toutes les applications web et jeux que je souhaite partager avec vous. Pour l'instant, il n'y en a qu'un seul : CRANKWORD, un jeu multijoueur au tour par tour où on devine des mots. Bonne lecture !"
 };
 
 

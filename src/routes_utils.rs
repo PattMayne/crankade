@@ -142,6 +142,7 @@ pub struct PostId {
     pub id: i64,
 }
 
+
 #[derive(Serialize)]
 pub struct FullRedirectUri {
     pub redirect_uri: String,
@@ -527,7 +528,7 @@ pub async fn authenticate_user_response(
     } else {
         // It's an external site. So let's get an auth_token and redirect
         post_auth_client_site_redirect(
-            req, user,
+            req, user.get_id(),
             pool, client_id,
             Some(two_auth_cookies)
         ).await
@@ -543,26 +544,16 @@ pub async fn authenticate_user_response(
  */
 pub async fn post_auth_client_site_redirect(
     req: HttpRequest,
-    user: db::User,
+    user_id: i32,
     pool: web::Data<MySqlPool>,
     client_id: String,
     cookies_option: Option<TwoAuthCookies>
 ) -> HttpResponse {
     let server_error: HttpResponse = get_server_error(&req).await;
-    // extract or create cookies for local login
-    let two_auth_cookies: TwoAuthCookies = match cookies_option {
-        Some(cookies) => cookies,
-        None => match get_user_auth_cookies(&pool, &user).await {
-            Ok(cookies) => cookies,
-            Err(error_response) => 
-                return HttpResponse::InternalServerError()
-                    .json(error_response)
-        }
-    };
 
     let auth_code: String = match db::add_auth_code(
         &pool,
-        user.get_id(),
+        user_id,
         &client_id,
         auth::generate_auth_code()
     ).await {
@@ -588,11 +579,17 @@ pub async fn post_auth_client_site_redirect(
                     &auth_code
             )};
 
-            // Set local cookies.
-            HttpResponse::Ok()
-                .cookie(two_auth_cookies.jwt_cookie)
-                .cookie(two_auth_cookies.refresh_token_cookie)
-                .json(full_uri)
+            // Do we need to set cookies?
+            match cookies_option {
+                Some(two_auth_cookies) => {
+                    // Set local cookies.
+                    HttpResponse::Ok()
+                        .cookie(two_auth_cookies.jwt_cookie)
+                        .cookie(two_auth_cookies.refresh_token_cookie)
+                        .json(full_uri)
+                },
+                None => HttpResponse::Ok().json(full_uri)
+            }
         },
         None => {
             let code: u16 = 404;

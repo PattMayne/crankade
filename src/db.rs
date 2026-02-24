@@ -111,9 +111,11 @@ pub struct RefreshToken {
 
 pub struct ClientLinkData {
     pub domain: String,
+    pub redirect_uri: String,
     pub logo_url: String,
     pub name: String,
     pub description: String,
+    pub client_id: String,
 }
 
 
@@ -464,7 +466,7 @@ pub async fn get_client_refs(pool: &MySqlPool) -> Result<Vec<ClientRef>> {
 pub async fn get_client_links(pool: &MySqlPool) -> Result<Vec<ClientLinkData>> {
     let client_refs: Vec<ClientLinkData> = sqlx::query_as!(
         ClientLinkData,
-        "SELECT name, logo_url, domain, description FROM client_sites 
+        "SELECT name, logo_url, domain, description, redirect_uri, client_id FROM client_sites 
         WHERE is_active = 1 AND is_internal != 1"
     ).fetch_all(pool).await?;
 

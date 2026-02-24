@@ -22,6 +22,7 @@ use actix_web::{
     get, post, web::Redirect };
 use actix_web::cookie::{ Cookie };
 use askama::Template;
+use serde_json::ser;
 use sqlx::{ MySqlPool };
 
 use crate::resource_mgr::{AgreementTexts, BlogTexts, NewPostTexts};
@@ -67,6 +68,49 @@ use crate::{
  * 
  * 
  */
+
+
+ /**
+  * Returns a redirect URL, either to client front page (if not logged in)
+  * or to client reception (if logged in).
+  * The JS receiving this must do the actual redirect.
+  */
+#[post("client_link/{client_id}")]
+async fn link_to_client(
+    pool: web::Data<MySqlPool>,
+    req: HttpRequest,
+    client_id_obj: web::Path<ClientId>
+) -> HttpResponse {
+    // TODO: replace "server error" with dynamic error response
+    let server_error: HttpResponse = get_server_error(&req).await;
+    let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+
+    // Get the requested client site data
+    let client_data: db::ClientData =
+        match db::get_client_by_client_id(&pool, &client_id_obj.client_id).await {
+            Ok(Some(data)) => data,
+            Ok(None) => return server_error,
+            Err(_e) => return server_error
+        };
+
+    if !user_req_data.logged_in {
+        // just send them to the client url
+        return HttpResponse::Ok().json(
+            FullRedirectUri {
+                redirect_uri: client_data.domain
+            }
+        )        
+    }
+
+    let user_id: i32 = user_req_data.id.unwrap();
+    // They are already logged in.
+    post_auth_client_site_redirect(
+        req, user_id, pool,
+        client_id_obj.client_id.to_string(),
+        None
+    ).await
+}
+
 
 
 /** REGISTER
@@ -148,10 +192,6 @@ async fn register_post(
             Err(_e) => return server_error
         };
 
-    // create auth_token if site is external
-    println!("Client id: {}", info.client_id);
-
-        
     authenticate_user_response(
         req, user, pool,
         info.client_id.clone()

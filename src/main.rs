@@ -54,6 +54,7 @@ async fn main() -> std::io::Result<()> {
             .service(routes::error_root)
             .service(routes::error_root_2)
             .service(routes::error_page)
+            .service(routes::link_to_client)
             .service(
                 web::scope("/auth")
                     .route("/login", web::get().to(routes::login_page))

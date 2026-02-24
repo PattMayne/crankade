@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS client_sites (
     hashed_client_secret VARCHAR(255) NOT NULL DEFAULT "", -- only for confidential clients (ie backend, not user)
     name VARCHAR(100) NOT NULL,
     domain VARCHAR(255) NOT NULL UNIQUE,
-    redirect_uri VARCHAR(255) NOT NULL, -- maybe not needed. Keeping for future-proofing
+    redirect_uri VARCHAR(255) NOT NULL,
     description TEXT NOT NULL DEFAULT "",
     logo_url VARCHAR(255) NOT NULL DEFAULT "",
     is_active BOOL NOT NULL DEFAULT TRUE,

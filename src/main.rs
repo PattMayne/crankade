@@ -79,6 +79,7 @@ async fn main() -> std::io::Result<()> {
                     .service(routes::edit_post_page)
                     .service(routes::update_blog_post)
                     .service(routes::update_client_post)
+                    .service(routes::delete_blog_post)
                     .service(routes::edit_client_site_form_page)
                     .service(routes::req_secret_post)
             )

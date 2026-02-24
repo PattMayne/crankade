@@ -690,6 +690,43 @@ pub async fn update_blog_post(
 
 
 
+#[post("/delete_post")]
+pub async fn delete_blog_post(
+    pool: web::Data<MySqlPool>,
+    req: HttpRequest,
+    blog_post_data: web::Json<DeletePostId>
+) -> HttpResponse {
+    println!("here");
+    let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+    // check if they're admin
+    if let Some(redirect_resp) = redirect_non_admin(&user_req_data, &req) {
+        return redirect_resp;
+    }
+
+    // Add the post to the database
+    let post_succes_obj: BlogPostSuccess = match db::delete_post(
+        &pool,
+        blog_post_data.post_id
+    ).await {
+        Ok(_rows_affected) => {
+            BlogPostSuccess {
+                success: true,
+                message: "Blog post deleted".to_string()
+            }
+        },
+        Err(e) => {
+            eprintln!("DB ERROR: {}", e);
+            BlogPostSuccess {
+                success: false,
+                message: "DATABASE ERROR: Blog post NOT UPDATED".to_string()
+            }
+        }
+    };
+
+    HttpResponse::Ok().json(post_succes_obj)
+}
+
+
 #[post("/update_names")]
 pub async fn update_names(
     pool: web::Data<MySqlPool>,

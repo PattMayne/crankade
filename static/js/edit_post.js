@@ -12,8 +12,6 @@ let msgs = []
 
 const submit_data = async () => {
     msgs = []
-
-    console.log("SUBMITTING DATYA")
     hide_msg_box()
 
     // Gather data 
@@ -37,11 +35,9 @@ const submit_data = async () => {
         post_body: post_body,
     }
 
-    console.log("Post body is: " + data.post_body)
-
     /*  KEEPING THE FETCH STUFF IN COMMENTS FOR LATER ADAPTATION */
 
-    // now send it to the login route
+    // now send it to the update route
     const route = "/admin/update_post"
 
     await utils.fetch_json_post(route, data)
@@ -75,6 +71,52 @@ const submit_data = async () => {
 }
 
 
+const delete_post = async () => {
+    msgs = []
+    hide_msg_box()
+
+    // Gather data 
+    const post_id = document.getElementById("post_id").value
+    const data = { post_id: parseInt(post_id, 10) }
+
+    /*  KEEPING THE FETCH STUFF IN COMMENTS FOR LATER ADAPTATION */
+
+    // now send it to the delete route
+    const route = "/admin/delete_post"
+
+    await utils.fetch_json_post(route, data)
+        .then(response => {
+            if(!response.ok) {
+                console.log("NOT OK")
+                response.json().then(data => {
+                    if (!!data.code && data.code == 403 || data.code == 401) {
+                        const redirect_uri = "/error/" + data.code
+                        window.location.href = redirect_uri
+                    } else {
+                        let msg = (!!data.code) ? (data.code.toString() + " ") : ""
+                        msg += (!!data.error) ? data.error : " Error occurred"
+                        msgs.push(msg)
+                        show_msg_box()
+                    }
+                })
+
+                throw new Error("Could not update blog post, or server error.")
+            }
+            return response.json()
+        }).then(response => {
+            if(!!response.success) {
+                window.location.href = "/admin"
+            } else if (!!response.message) {
+                msgs.push(response.message)
+                show_msg_box()
+            }
+            
+        }).catch(error => {
+            console.log('Error: ', error)
+        })
+}
+
+
 // SHOW/HIDE ERROR BOX
 
 const hide_msg_box = () =>
@@ -97,8 +139,15 @@ const show_msg_box = () => {
 document.addEventListener('DOMContentLoaded', () => {
     hide_msg_box()
     const submit_button = document.getElementById("submit_button")
+    const delete_button = document.getElementById("delete_button")
+
     !!submit_button && submit_button.addEventListener("click", () => {
         console.log("pressed le buton")
         submit_data()
+    })
+
+    !!delete_button && delete_button.addEventListener("click", () => {
+        console.log("deleting")
+        delete_post()
     })
 })

@@ -129,6 +129,17 @@ h1, h2, h3, h4, h5, h6 {
   font-style: italic;
 }
 
+.red_button {
+  background-color: red;
+  color: #111111;
+  border: 1px solid #111111;
+}
+
+.red_button:hover {
+  color: red;
+  border: 1px solid #f0f0f0;
+}
+
 /* 
  * 
  * 

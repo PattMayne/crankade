@@ -7,7 +7,7 @@
         <title>{{ texts.title }}</title>
         <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
         <link rel="stylesheet" href="/static/css/foundation.min.css">
-        <link rel="stylesheet" href="/static/css/app.css?id=1402">
+        <link rel="stylesheet" href="/static/css/app.css?id=1402909">
     </head>
 
     <body>
@@ -21,12 +21,14 @@
                 <p>Use HTML for formatting of post body.</p>
                 <textarea id="post_body" cols="50">{{ post_body }}</textarea>
 
-                <div class="large-12 cell">
-                    <a class="button small" id="submit_button">UPDATE</a>
-                </div>
+                <a class="button small" id="submit_button">UPDATE</a>
 
                 <div class="callout primary" id="msg_box">
                 </div>
+
+                <hr/><hr/>
+
+                <a class="button small red_button" id="delete_button">DELETE POST</a>
             </div>
 
             <input type="hidden" id="post_id" value="{{ post_id }}" />
@@ -38,8 +40,7 @@
         <script src="/static/js/vendor/jquery.js"></script>
         <script src="/static/js/vendor/what-input.js"></script>
         <script src="/static/js/vendor/foundation.min.js"></script>
-        <script type="module" src="/static/js/edit_post.js?id=041"></script>
+        <script type="module" src="/static/js/edit_post.js?id=041927"></script>
     </body>
-
 
 </html>

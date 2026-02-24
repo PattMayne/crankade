@@ -1017,6 +1017,19 @@ pub async fn delete_refresh_token(
 }
 
 
+pub async fn delete_post(
+    pool: &MySqlPool,
+    post_id: i32
+) -> Result<bool> {
+    let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
+        "DELETE FROM dev_blog WHERE id = ?")
+        .bind(post_id)
+        .execute(pool)
+        .await?;
+
+        Ok(result.rows_affected() > 0)
+}
+
 
 /* 
  * 

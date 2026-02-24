@@ -278,6 +278,11 @@ impl BlogPostData {
 
 
 #[derive(Deserialize)]
+pub struct DeletePostId {
+    pub post_id: i32,
+}
+
+#[derive(Deserialize)]
 pub struct BlogPostUpdateData {
     pub post_id: i64,
     pub post_title: String,

@@ -64,5 +64,16 @@ CREATE TABLE dev_blog (
     title VARCHAR(255) NOT NULL,
     body TEXT NOT NULL,
     created_timestamp TIMESTAMP NOT NULL DEFAULT UTC_TIMESTAMP,
-    updated_timestamp TIMESTAMP NOT NULL DEFAULT UTC_TIMESTAMP
+    updated_timestamp TIMESTAMP NOT NULL DEFAULT UTC_TIMESTAMP,
+    pinned BOOL NOT NULL DEFAULT FALSE
+);
+
+-- Codes for email verification, and also for reset password
+CREATE TABLE verification_codes (
+    user_id INT NOT NULL UNIQUE,
+    code_hash VARCHAR(255) NOT NULL, -- ten digits, hashed
+    attempts INT DEFAULT 0,
+    created_timestamp TIMESTAMP NOT NULL DEFAULT UTC_TIMESTAMP,
+    expires_timestamp TIMESTAMP NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );

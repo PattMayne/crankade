@@ -271,8 +271,6 @@ impl User {
 
 
 
-
-
 /* 
  * 
  * 
@@ -308,7 +306,6 @@ pub async fn get_auth_code_data(
 }
 
 
-
 pub async fn get_post_by_id(
     pool: &MySqlPool,
     post_id: i64
@@ -322,6 +319,17 @@ pub async fn get_post_by_id(
 }
 
 
+pub async fn get_latest_pinned_post(
+    pool: &MySqlPool
+) -> Result<Option<BlogPost>> {
+    Ok(sqlx::query_as!(
+            BlogPost,
+            "SELECT id, author_name, title, body, created_timestamp, updated_timestamp
+            FROM dev_blog WHERE pinned = ? ORDER BY created_timestamp LIMIT 1",
+            true
+        ).fetch_optional(pool).await?)
+}
+
 
 pub async fn get_posts(
     pool: &MySqlPool
@@ -334,8 +342,6 @@ pub async fn get_posts(
 
     Ok(blog_posts)
 }
-
-
 
 
 
@@ -409,7 +415,6 @@ pub async fn get_username_and_role_by_id(
         id
     ).fetch_optional(pool).await?)
 }
-
 
 
 pub async fn get_user_by_id(

@@ -840,9 +840,20 @@ async fn home(
             }
         };
 
+    let pinned_post: Option<String> =
+        match db::get_latest_pinned_post(&pool).await {
+            Ok(Some(post)) => Some(post.body.to_owned()),
+            Ok(None) => None,
+            Err(e) => {
+                eprintln!("Error retrieving pinned post: {e}");
+                None
+            }
+        };
+
     let home_template: HomeTemplate = HomeTemplate {
         texts: HomeTexts::new(&user_req_data),
         user: user_req_data,
+        pinned_post,
         client_links
     };
 

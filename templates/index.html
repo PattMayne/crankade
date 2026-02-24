@@ -26,7 +26,12 @@
                 </div>
 
                 <div class="callout primary">
-                    <p>CRANKADE is the central hub for where I (Matt Payne) will host any web apps and games that I want to share with you. Right now there's just one: CRANKWORD, a multi-player, turn-based word-guessing game. Please enjoy!</p>
+                    <p>
+                        {% if pinned_post.is_some() %}{{ pinned_post.as_ref().unwrap() | safe }}
+                        {% else %}
+                        {{ texts.default_pinned | safe }}
+                        {% endif %}
+                    </p>
                 </div>
             </div>
 

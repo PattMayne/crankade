@@ -59,12 +59,14 @@ use crate::{
 pub struct HomeTexts {
     pub title: String,
     pub message: String,
-    pub nav: NavTexts
+    pub default_pinned: String,
+    pub nav: NavTexts,
 }
 
 impl HomeTexts {
     pub fn new(user_req_data: &UserReqData) -> HomeTexts {
         let lang: &SupportedLangs = &user_req_data.lang;
+        let default_pinned: String = get_translation("frontpage", lang, None);
         let title: String = get_translation("home.title", lang, None);
         let message: String = get_translation(
             "home.greeting",
@@ -75,6 +77,7 @@ impl HomeTexts {
         HomeTexts {
             title,
             message,
+            default_pinned,
             nav
         }
     }

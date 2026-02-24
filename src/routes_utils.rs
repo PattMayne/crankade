@@ -266,6 +266,7 @@ pub struct ClientDataReq {
 pub struct BlogPostData {
     pub post_title: String,
     pub post_body: String,
+    pub pinned: bool
 }
 
 impl BlogPostData {

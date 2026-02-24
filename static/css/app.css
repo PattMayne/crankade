@@ -45,6 +45,10 @@ body {
   color: #f0f0f0;
 }
 
+body label {
+  color: #f0f0f0;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: nue-gothic-round;
   text-transform: uppercase;

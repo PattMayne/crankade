@@ -19,6 +19,7 @@ const submit_data = async () => {
     // Gather data 
     const post_body = document.getElementById("post_body").value.trim()
     const post_title = document.getElementById("title").value.trim()
+    const pin_checked = document.getElementById("pin_check").checked
 
     // make sure required fields are not empty
     let required_fields_are_filled = post_body != ""
@@ -33,6 +34,7 @@ const submit_data = async () => {
     const data = {
         post_title: post_title,
         post_body: post_body,
+        pinned: pin_checked
     }
 
     console.log("Post body is: " + data.post_body)

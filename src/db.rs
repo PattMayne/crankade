@@ -812,18 +812,20 @@ pub async fn add_post(
     pool: &MySqlPool,
     post_title: &String,
     post_body: &String,
-    author_name: String
+    author_name: String,
+    pinned: bool
 ) -> Result<u64, anyhow::Error> {
 
     // We trust that the data has already been checked. We simply enter it like obedient robots now.
     // Except that we will turn the bool into an int.
     let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
     "INSERT INTO dev_blog (
-            title, body, author_name
-        ) VALUES (?, ?, ?)")
+            title, body, author_name, pinned
+        ) VALUES (?, ?, ?, ?)")
         .bind(post_title)
         .bind(post_body)
         .bind(author_name)
+        .bind(pinned)
         .execute(pool).await.map_err(|e| {
             eprintln!("Failed to save NEW POST to database: {:?}", e);
             anyhow!("Could not save NEW POST to database: {e}")

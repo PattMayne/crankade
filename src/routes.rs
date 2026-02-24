@@ -342,7 +342,8 @@ async fn new_blog_post(
         &pool,
         &blog_post_data.post_title,
         &blog_post_data.post_body,
-        user_req_data.username.unwrap()
+        user_req_data.username.unwrap(),
+        blog_post_data.pinned
     ).await {
         Ok(_id) => {
             BlogPostSuccess {

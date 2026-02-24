@@ -7,7 +7,7 @@
         <title>{{ texts.title }}</title>
         <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
         <link rel="stylesheet" href="/static/css/foundation.min.css">
-        <link rel="stylesheet" href="/static/css/app.css?id=1402">
+        <link rel="stylesheet" href="/static/css/app.css?id=14029">
     </head>
 
     <body>
@@ -21,9 +21,17 @@
                 <p>Use HTML for formatting of post body.</p>
                 <textarea id="post_body" cols="50"></textarea>
 
-                <div class="large-12 cell">
-                    <a class="button small" id="submit_button">SUBMIT</a>
-                </div>
+                <label for="pin_check">
+                    <input
+                        type="checkbox"
+                        id="pin_check"
+                        name="pin_check"
+                        value="pinned"
+                    >
+                    Pin to home page?
+                </label>
+
+                <a class="button small" id="submit_button">SUBMIT</a>
 
                 <div class="callout primary" id="msg_box">
                 </div>
@@ -36,8 +44,7 @@
         <script src="/static/js/vendor/jquery.js"></script>
         <script src="/static/js/vendor/what-input.js"></script>
         <script src="/static/js/vendor/foundation.min.js"></script>
-        <script type="module" src="/static/js/new_post_form.js?id=14092"></script>
+        <script type="module" src="/static/js/new_post_form.js?id=140929"></script>
     </body>
-
 
 </html>

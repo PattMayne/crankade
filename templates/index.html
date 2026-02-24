@@ -34,15 +34,20 @@
                 <h2>APPS</h2>
                 {% for link in client_links %}
                 <div class="callout client_link_callout">
-                    <h5><a href="{{ link.domain }}">{{ link.name }}</a></h5>
-                    <a onclick="redirect_to_client( '{{ link.client_id }}' )"><img class="client_link_logo" src="{{ link.logo_url }}" /></a>
+                    <h5>
+                        <a class="client-link" data-client-id="{{ link.client_id }}">
+                            {{ link.name }}
+                        </a>
+                    </h5>
+                    <a class="client-link" data-client-id="{{ link.client_id }}">
+                        <img class="client_link_logo" src="{{ link.logo_url }}" />
+                    </a>
                     <p>{{ link.description }}</p>
                 </div>
                 {% endfor %}
             </div>
 
-            <div class="callout primary" id="err_msg_box">
-            </div>
+            <div class="callout primary" id="err_msg_box"></div>
 
         </div> <!-- end of grid-x -->
 
@@ -52,7 +57,7 @@
         <script src="static/js/vendor/what-input.js"></script>
         <script src="static/js/vendor/foundation.min.js"></script>
         <script type="module" src="static/js/app.js"></script>
-        <script type="module" src="static/js/index.js?id=1"></script>
+        <script type="module" src="static/js/index.js?id=149"></script>
     </body>
 
 </html>

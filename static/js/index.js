@@ -40,6 +40,15 @@ const redirect_to_client = async client_id => {
 }
 
 
+document.addEventListener("click", function (event) {
+    const link_element = event.target.closest(".client-link")
+    if (!link_element) return
+
+    event.preventDefault()
+    redirect_to_client(link_element.dataset.clientId)
+});
+
+
 // SHOW/HIDE ERROR BOX
 
 const hide_err_box = () =>
@@ -61,6 +70,3 @@ const show_err_box = () => {
 
 // Add event listeners
 document.addEventListener('DOMContentLoaded', () => hide_err_box())
-
-// Make functions available to the HTML elements (via window)
-window.redirect_to_client = redirect_to_client

@@ -22,7 +22,6 @@ use actix_web::{
     get, post, web::Redirect };
 use actix_web::cookie::{ Cookie };
 use askama::Template;
-use serde_json::ser;
 use sqlx::{ MySqlPool };
 
 use crate::resource_mgr::{AgreementTexts, BlogTexts, NewPostTexts};
@@ -1323,9 +1322,9 @@ async fn verify_auth_code(
     inputs: web::Json<AuthCodeRequest>
 ) -> HttpResponse {
 
-    println!("Code: {}", inputs.code);
-    println!("Id: {}", inputs.client_id);
-    println!("Secret: {}", inputs.client_secret);
+    // println!("Code: {}", inputs.code);
+    // println!("Id: {}", inputs.client_id);
+    // println!("Secret: {}", inputs.client_secret);
 
     /* 
      * From DB gather:
@@ -1361,8 +1360,6 @@ async fn verify_auth_code(
 
     // Make sure it's not expired
     if auth_code_data.is_expired() {
-        eprint!("Expired auth code");
-        println!("auth code id: {}", auth_code_data.id);
         return return_authentication_err_json();
     }
 
@@ -1386,8 +1383,6 @@ async fn verify_auth_code(
     // TODO: check auth_code EXPIRY date
 
     if secrets_match && client_ids_match {
-        println!("SUCCESS: ALL MATCH");
-
         let username_and_role: db::UsernameAndRole =
             match db::get_username_and_role_by_id(&pool, auth_code_data.user_id).await {
                 Ok(option) => {
@@ -1419,15 +1414,10 @@ async fn verify_auth_code(
         };
 
         // now DELETE the auth token
-
-        println!("SUCCESS: SENDING");
-
         return HttpResponse::Ok()
             .json(user_data);
     }
 
-
-    println!("FAILURE: NO MATCH");
     // RETURN FAILURE
     return_authentication_err_json()
 }

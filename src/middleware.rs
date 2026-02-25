@@ -15,8 +15,6 @@
  * That post-processing happens AFTER all the later calls
  */
 
-use std::any::Any;
-
 use actix_web::{
     web, error, Error, HttpMessage,
     body::MessageBody, dev::{ServiceRequest, ServiceResponse},
@@ -116,7 +114,7 @@ async fn get_user_req_data_from_opt(
             Ok(auth::UserReqData::new(Some(claims)))
         },
         auth::JwtVerification::Expired(claims) => {
-            println!("JWT expired. will check refresh token and generate new JWT");
+            //println!("JWT expired. will check refresh token and generate new JWT");
             // JWT is expired but otherwise valid.
             // set an object in the req to send a new cookie
             /* 

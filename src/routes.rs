@@ -24,7 +24,7 @@ use actix_web::cookie::{ Cookie };
 use askama::Template;
 use sqlx::{ MySqlPool };
 
-use crate::resource_mgr::{AgreementTexts, BlogTexts, NewPostTexts};
+use crate::resource_mgr::{AgreementTexts, BlogTexts, NewPostTexts, EditPostTexts};
 // local modules, loaded as crates (declared as mods in main.rs)
 use crate::{
     resources::get_translation,
@@ -326,7 +326,6 @@ async fn new_blog_post(
     req: HttpRequest,
     mut blog_post_data: web::Json<BlogPostData>
 ) -> HttpResponse {
-    println!("here");
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
     // check if they're admin
     if let Some(redirect_resp) = redirect_non_admin(&user_req_data, &req) {
@@ -344,17 +343,19 @@ async fn new_blog_post(
         user_req_data.username.unwrap(),
         blog_post_data.pinned
     ).await {
-        Ok(_id) => {
+        Ok(post_id) => {
             BlogPostSuccess {
                 success: true,
-                message: "Blog post created".to_string()
+                message: "Blog post created".to_string(),
+                post_id: post_id as i32
             }
         },
         Err(e) => {
             eprintln!("{}", e);
             BlogPostSuccess {
                 success: false,
-                message: "ERROR: Blog post NOT SAVED".to_string()
+                message: "ERROR: Blog post NOT SAVED".to_string(),
+                post_id: 0
             }
         }
     };
@@ -652,7 +653,6 @@ pub async fn update_blog_post(
     req: HttpRequest,
     mut blog_post_data: web::Json<BlogPostUpdateData>
 ) -> HttpResponse {
-    println!("here");
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
     // check if they're admin
     if let Some(redirect_resp) = redirect_non_admin(&user_req_data, &req) {
@@ -667,19 +667,30 @@ pub async fn update_blog_post(
         &pool,
         blog_post_data.post_id,
         &blog_post_data.post_title,
-        &blog_post_data.post_body
+        &blog_post_data.post_body,
+        blog_post_data.pinned
     ).await {
-        Ok(_rows_affected) => {
-            BlogPostSuccess {
-                success: true,
-                message: "Blog post updated".to_string()
+        Ok(rows_affected) => {
+            if rows_affected > 0 {
+                BlogPostSuccess {
+                    success: true,
+                    message: "Blog post updated".to_string(),
+                    post_id: blog_post_data.post_id as i32
+                }
+            } else {
+                BlogPostSuccess {
+                    success: false,
+                    message: "Blog post NOT updated".to_string(),
+                    post_id: blog_post_data.post_id as i32
+                }
             }
         },
         Err(e) => {
             eprintln!("DB ERROR: {}", e);
             BlogPostSuccess {
                 success: false,
-                message: "DATABASE ERROR: Blog post NOT UPDATED".to_string()
+                message: "DATABASE ERROR: Blog post NOT UPDATED".to_string(),
+                    post_id: blog_post_data.post_id as i32
             }
         }
     };
@@ -695,7 +706,6 @@ pub async fn delete_blog_post(
     req: HttpRequest,
     blog_post_data: web::Json<DeletePostId>
 ) -> HttpResponse {
-    println!("here");
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
     // check if they're admin
     if let Some(redirect_resp) = redirect_non_admin(&user_req_data, &req) {
@@ -710,14 +720,16 @@ pub async fn delete_blog_post(
         Ok(_rows_affected) => {
             BlogPostSuccess {
                 success: true,
-                message: "Blog post deleted".to_string()
+                message: "Blog post deleted".to_string(),
+                post_id: blog_post_data.post_id
             }
         },
         Err(e) => {
             eprintln!("DB ERROR: {}", e);
             BlogPostSuccess {
                 success: false,
-                message: "DATABASE ERROR: Blog post NOT UPDATED".to_string()
+                message: "DATABASE ERROR: Blog post NOT UPDATED".to_string(),
+                post_id: blog_post_data.post_id
             }
         }
     };
@@ -1137,11 +1149,9 @@ pub async fn edit_post_page(
     match post_obj_result.unwrap() {
         Some(post) => {
             let edit_post_template: EditPostTemplate = EditPostTemplate {
-                texts: NewPostTexts::new(&user_req_data),
+                texts: EditPostTexts::new(&user_req_data),
                 user: user_req_data,
-                post_id: post_id_obj.id,
-                post_body: post.body,
-                post_title: post.title
+                post
             };
 
             HttpResponse::Ok()

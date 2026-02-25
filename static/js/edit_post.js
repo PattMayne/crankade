@@ -18,6 +18,9 @@ const submit_data = async () => {
     const post_body = document.getElementById("post_body").value.trim()
     const post_title = document.getElementById("title").value.trim()
     const post_id = document.getElementById("post_id").value
+    const pin_checked = document.getElementById("pin_check").checked
+
+    if (pin_checked) { console.log("CHECKED") } else { console.log("NOT CHECKED") }
 
     // make sure required fields are not empty
     let required_fields_are_filled = post_body != ""
@@ -33,6 +36,7 @@ const submit_data = async () => {
         post_id: parseInt(post_id, 10),
         post_title: post_title,
         post_body: post_body,
+        pinned: pin_checked
     }
 
     /*  KEEPING THE FETCH STUFF IN COMMENTS FOR LATER ADAPTATION */

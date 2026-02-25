@@ -50,8 +50,8 @@ const submit_data = async () => {
                 console.log("NOT OK")
                 response.json().then(data => {
                     if (!!data.code && data.code == 403 || data.code == 401) {
-                        const redirect_uri = "/error/" + data.code;
-                        window.location.href = redirect_uri;
+                        const redirect_uri = "/error/" + data.code
+                        window.location.href = redirect_uri
                     } else {
                         let msg = (!!data.code) ? (data.code.toString() + " ") : ""
                         msg += (!!data.error) ? data.error : " Error occurred"
@@ -64,9 +64,17 @@ const submit_data = async () => {
             }
             return response.json()
         }).then(response => {
-            if(!!response.message){
+            if (!!response.message){
                 msgs.push(response.message)
                 show_msg_box()
+            }
+
+            if (!!response.success && !! response.post_id) {
+                const redirect_url = "/admin/edit_post/" + response.post_id
+
+                setTimeout(() => {
+                    window.location.href = redirect_url
+                }, 1400)
             }
             
         }).catch(error => {

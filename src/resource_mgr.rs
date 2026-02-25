@@ -220,9 +220,8 @@ impl NewPostTexts {
     }
 }
 
-
 /**
- * route: get "/admin/edit_post"
+ * route: get "/admin/edit_post/{id}"
  */
 pub struct EditPostTexts {
     pub title: String,
@@ -243,6 +242,9 @@ impl EditPostTexts {
         }
     }
 }
+
+
+
 
 
 /**

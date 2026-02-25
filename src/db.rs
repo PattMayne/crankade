@@ -332,7 +332,7 @@ pub async fn get_latest_pinned_post(
             BlogPost,
             "SELECT id, author_name, title, body,
             created_timestamp, updated_timestamp, pinned 
-            FROM dev_blog WHERE pinned = ? ORDER BY created_timestamp LIMIT 1",
+            FROM dev_blog WHERE pinned = ? ORDER BY created_timestamp DESC LIMIT 1",
             true
         ).fetch_optional(pool).await?)
 }
@@ -938,15 +938,20 @@ pub async fn update_post(
     post_id: i64,
     post_title: &String,
     post_body: &String,
+    pinned: bool
 ) -> Result<i32, anyhow::Error> {
     let update_time: OffsetDateTime = OffsetDateTime::now_utc();
-    let result = sqlx::query(
+    let pinned_i8: i8 = if pinned { 1 } else { 0 };
+
+    let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
         "UPDATE dev_blog 
-            SET title = ?, body = ?, updated_timestamp = ? 
+            SET title = ?, body = ?, updated_timestamp = ? ,
+            pinned = ?
             WHERE id = ?")
             .bind(post_title)
             .bind(post_body)
             .bind(update_time)
+            .bind(pinned_i8)
             .bind(post_id)
             .execute(pool)
             .await?;

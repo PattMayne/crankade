@@ -25,6 +25,7 @@ use askama::Template;
 use serde::{ Deserialize, Serialize };
 use sqlx::{MySqlPool };
 
+use crate::db::BlogPost;
 use crate::resource_mgr::AgreementTexts;
 // local modules, loaded as crates (declared as mods in main.rs)
 use crate::{
@@ -34,7 +35,7 @@ use crate::{
     resource_mgr::{
         HomeTexts, LoginTexts, RegisterTexts, AdminTexts, BlogTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
-        NewPostTexts,
+        NewPostTexts, EditPostTexts,
         ErrorData, error_by_code
      }
 };
@@ -67,6 +68,7 @@ use crate::{
 pub struct BlogPostSuccess {
     pub success: bool,
     pub message: String,
+    pub post_id: i32,
 }
 
 
@@ -287,6 +289,7 @@ pub struct BlogPostUpdateData {
     pub post_id: i64,
     pub post_title: String,
     pub post_body: String,
+    pub pinned: bool,
 }
 
 impl BlogPostUpdateData {
@@ -423,12 +426,9 @@ pub struct NewPostTemplate {
 #[template(path ="edit_post.html")]
 pub struct EditPostTemplate {
     pub user: auth::UserReqData,
-    pub texts: NewPostTexts,
-    pub post_id: i64,
-    pub post_title: String,
-    pub post_body: String,
+    pub texts: EditPostTexts,
+    pub post: BlogPost,
 }
-
 
 
 #[derive(Template)]

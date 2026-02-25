@@ -71,6 +71,7 @@ pub struct BlogPost {
     pub title: String,
     pub body: String,
     pub author_name: String,
+    pub pinned: i8,
     pub created_timestamp: OffsetDateTime,
     pub updated_timestamp: OffsetDateTime,
 }
@@ -81,6 +82,10 @@ impl BlogPost {
         let format: &[time::format_description::BorrowedFormatItem<'_>] =
             format_description!("[year]-[month]-[day] [hour]:[minute]");
         self.updated_timestamp.format(&format).unwrap()
+    }
+
+    pub fn is_pinned(&self) -> bool {
+        self.pinned == 1
     }
 }
 
@@ -312,7 +317,8 @@ pub async fn get_post_by_id(
 ) -> Result<Option<BlogPost>> {
     Ok(sqlx::query_as!(
             BlogPost,
-            "SELECT id, author_name, title, body, created_timestamp, updated_timestamp
+            "SELECT id, author_name, title, body,
+            created_timestamp, updated_timestamp, pinned
             FROM dev_blog WHERE id = ?",
             post_id
         ).fetch_optional(pool).await?)
@@ -324,7 +330,8 @@ pub async fn get_latest_pinned_post(
 ) -> Result<Option<BlogPost>> {
     Ok(sqlx::query_as!(
             BlogPost,
-            "SELECT id, author_name, title, body, created_timestamp, updated_timestamp
+            "SELECT id, author_name, title, body,
+            created_timestamp, updated_timestamp, pinned 
             FROM dev_blog WHERE pinned = ? ORDER BY created_timestamp LIMIT 1",
             true
         ).fetch_optional(pool).await?)
@@ -336,13 +343,29 @@ pub async fn get_posts(
 ) -> Result<Vec<BlogPost>> {
     let blog_posts: Vec<BlogPost> = sqlx::query_as!(
         BlogPost,
-        "SELECT id, author_name, title, body, created_timestamp, updated_timestamp
+        "SELECT id, author_name, title, body, created_timestamp, 
+        updated_timestamp, pinned
         FROM dev_blog ORDER BY created_timestamp ASC"
     ).fetch_all(pool).await?;
 
     Ok(blog_posts)
 }
 
+
+pub async fn get_non_pinned_posts(
+    pool: &MySqlPool
+) -> Result<Vec<BlogPost>> {
+    let blog_posts: Vec<BlogPost> = sqlx::query_as!(
+        BlogPost,
+        "SELECT id, author_name, title, body, created_timestamp, 
+        updated_timestamp, pinned
+        FROM dev_blog WHERE pinned = ? 
+        ORDER BY created_timestamp ASC",
+        false
+    ).fetch_all(pool).await?;
+
+    Ok(blog_posts)
+}
 
 
 pub async fn get_user_by_username(

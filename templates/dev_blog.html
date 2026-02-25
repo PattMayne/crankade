@@ -21,6 +21,7 @@
 
             {% if posts.len() > 0 %}
             {% for post in posts %}
+            {% if !post.is_pinned() %}
                 <div class="large-6 medium-6 small-12 cell">
                     <div class="callout">
                         <h3>{{ post.title }}</h3>
@@ -30,7 +31,8 @@
                         </div>
                     </div>
                 </div>
-                {% endfor %}
+            {% endif %}
+            {% endfor %}
             {% else %}
             [NONE]
             {% endif %}

@@ -1089,7 +1089,7 @@ pub async fn blog(
 ) -> HttpResponse {
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
 
-    let posts: Vec<db::BlogPost> = match db::get_posts(&pool).await {
+    let posts: Vec<db::BlogPost> = match db::get_non_pinned_posts(&pool).await {
         Ok(b_posts) => b_posts,
         Err(_e) => return return_error_page(&req, 404)
     };

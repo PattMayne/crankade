@@ -69,7 +69,7 @@ const submit_login = async () => {
 // SHOW/HIDE ERROR BOX
 
 const hide_err_box = () =>
-    document.getElementById("err_msg_box").style.display = "none"
+    document.getElementById("err_msg_box").classList.add('hidden')
 
 const show_err_box = () => {
     const err_box = document.getElementById("err_msg_box")
@@ -80,7 +80,7 @@ const show_err_box = () => {
         err_box.innerHTML += msg_p
     }
 
-    err_box.style.display = ""
+    err_box.classList.remove('hidden')
 }
 
 

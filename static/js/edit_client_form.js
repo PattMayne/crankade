@@ -138,7 +138,7 @@ const request_new_secret = async () => {
 // SHOW/HIDE ERROR BOX
 
 const hide_msg_box = () =>
-    document.getElementById("msg_box").style.display = "none"
+    document.getElementById("msg_box").classList.add('hidden')
 
 const show_msg_box = () => {
     const msg_box = document.getElementById("msg_box")
@@ -149,7 +149,7 @@ const show_msg_box = () => {
         msg_box.innerHTML += msg_p
     }
 
-    msg_box.style.display = ""
+    msg_box.classList.remove('hidden')
 }
 
 const show_confirm_box = () => {

@@ -169,17 +169,19 @@ h1, h2, h3, h4, h5, h6 {
 /* CUSTOM CLASSES */
 
 
+.hidden {
+  display: none;
+}
+
 .nav-button {
   background-color: transparent;
   border: none;
   border-radius: 0px;
 }
 
-
 .italics {
   font-style: italic;
 }
-
 
 .red_button {
   background-color: red;

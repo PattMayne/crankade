@@ -998,7 +998,6 @@ pub async fn admin_home(
     pool: web::Data<MySqlPool>,
     req: HttpRequest
 ) -> impl Responder {
-    println!("ADMIN HOME");
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
 
     // check if they're admin
@@ -1321,10 +1320,6 @@ async fn verify_auth_code(
     pool: web::Data<MySqlPool>,
     inputs: web::Json<AuthCodeRequest>
 ) -> HttpResponse {
-
-    // println!("Code: {}", inputs.code);
-    // println!("Id: {}", inputs.client_id);
-    // println!("Secret: {}", inputs.client_secret);
 
     /* 
      * From DB gather:

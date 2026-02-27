@@ -699,7 +699,6 @@ pub async fn update_blog_post(
 }
 
 
-
 #[post("/delete_post")]
 pub async fn delete_blog_post(
     pool: web::Data<MySqlPool>,
@@ -1111,6 +1110,7 @@ pub async fn blog(
         texts: BlogTexts::new(&user_req_data),
         user: user_req_data
     };
+    
     HttpResponse::Ok()
         .content_type("text/html")
         .body(dev_blog_template.render().unwrap())

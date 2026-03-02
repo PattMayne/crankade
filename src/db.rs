@@ -698,7 +698,7 @@ pub async fn create_primary_admin(pool: &MySqlPool) -> Result<bool, anyhow::Erro
     let default_pw: String = std::env::var("ADMIN_PW")?;
 
     let username: &str = "pattmayne";
-    let email: &str = "pattmayne@gmail.com";
+    let email: &str = "pattmayne@protonmail.com";
     let role: &str = "admin";
     let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
             "INSERT INTO users (

@@ -164,9 +164,16 @@ h1, h2, h3, h4, h5, h6 {
   background-color: transparent!important;
 }
 
+
+
 .menu li
 {
   background-color: $lapis-lazuli;
+}
+
+#toggle_nav_button {
+  color: $yellow;
+  cursor: pointer;
 }
 
 /* CUSTOM CLASSES */

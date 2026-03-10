@@ -22,7 +22,6 @@ use actix_web::{
     get, post, web::Redirect };
 use actix_web::cookie::{ Cookie };
 use askama::Template;
-use serde::ser;
 use sqlx::{ MySqlPool };
 
 use crate::resource_mgr::{AgreementTexts, BlogTexts, NewPostTexts, EditPostTexts};

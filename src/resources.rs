@@ -102,6 +102,8 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
     "register.email.label.fr" => "E-mail:",
     "register.password.label.en" => "Password:",
     "register.password.label.fr" => "Mot de passe:",
+    "register.empty.label.en" => "Leave this field empty:",
+    "register.empty.label.fr" => "Laissez ce champ vide:",
     // REGISTER BUTTONS
     "register.btn.en" => "REGISTER",
     "register.btn.fr" => "INSCRIPTION",

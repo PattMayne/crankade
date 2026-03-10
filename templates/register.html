@@ -10,7 +10,6 @@
         <link rel="stylesheet" href="/static/css/app.css?id=70">
     </head>
 
-
     <body>
     {% include "header.html" %}
 
@@ -61,6 +60,11 @@
                                     <input id="password" name="password" type="password" />
                                 </label>
 
+                                <label for="website">
+                                    {{ texts.empty_field }}
+                                    <input id="website" name="website" type="text" placeholder="Leave this empty" />
+                                </label>
+
 
                                 <!-- AGREEMENTS -->
 
@@ -109,7 +113,7 @@
         <script src="/static/js/vendor/what-input.js"></script>
         <script src="/static/js/vendor/foundation.min.js"></script>
         <script type="module" src="/static/js/app.js?id=7"></script>
-        <script type="module" src="/static/js/register.js?id=5"></script>
+        <script type="module" src="/static/js/register.js?id=59"></script>
     </body>
 
 

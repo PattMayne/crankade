@@ -22,6 +22,7 @@ use actix_web::{
     get, post, web::Redirect };
 use actix_web::cookie::{ Cookie };
 use askama::Template;
+use serde::ser;
 use sqlx::{ MySqlPool };
 
 use crate::resource_mgr::{AgreementTexts, BlogTexts, NewPostTexts, EditPostTexts};
@@ -124,6 +125,11 @@ async fn register_post(
     info: web::Json<RegisterCredentials>
 ) -> HttpResponse {
     let server_error: HttpResponse = get_server_error(&req).await;
+
+    // first check if a bot filled in the "website" field (which is supposed to be empty)
+    if !info.website.is_empty() {
+        return server_error
+    }
 
     // check credentials against regex and size ranges
     let username_valid: bool = utils::validate_username(&info.username);

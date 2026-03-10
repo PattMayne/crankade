@@ -19,6 +19,7 @@ const submit_register = async () => {
     const username_element = document.getElementById("username")
     const email_element = document.getElementById("email")
     const client_id_element = document.getElementById("client_id")
+    const website_element = document.getElementById("website")
 
     // agreements
     const terms_check = document.getElementById("terms_check")
@@ -32,7 +33,8 @@ const submit_register = async () => {
         email: email_element.value.trim(),
         username: username_element.value.trim(),
         client_id: client_id_element.value.trim(),
-        has_agreed_terms: all_checked
+        website: website_element.value.trim(),
+        has_agreed_terms: all_checked,
     }
 
     // const ch_msgg = all_checked ? "ALL CHECKED" : "NOT ALL CHECKED"

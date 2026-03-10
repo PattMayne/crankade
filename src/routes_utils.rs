@@ -234,6 +234,7 @@ pub struct RegisterCredentials {
     pub password: String,
     pub client_id: String,
     pub has_agreed_terms: bool,
+    pub website: String,
 }
 
 

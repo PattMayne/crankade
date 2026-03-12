@@ -23,6 +23,8 @@ use actix_web::{
 use actix_web::cookie::{ Cookie };
 use askama::Template;
 use sqlx::{ MySqlPool };
+use resend_rs::types::CreateEmailBaseOptions;
+use resend_rs::{Resend, Result};
 
 use crate::resource_mgr::{AgreementTexts, BlogTexts, NewPostTexts, EditPostTexts};
 // local modules, loaded as crates (declared as mods in main.rs)
@@ -195,6 +197,27 @@ async fn register_post(
             Ok(None) =>  return server_error,
             Err(_e) => return server_error
         };
+
+    
+    // test resend email
+    // TODO: put API key in .env
+    // TODO: create email template
+    // TODO: create a function for this
+    // ACTUALLY probably create a whole module
+    let resend: Resend = Resend::new("re_FBAtsFyM_AJ8ngP9sNWeiMmPoidB5b9YJ");
+
+    let from: &str = "onboarding@resend.dev";
+    let to: [&str; 1] = ["pattmayne@gmail.com"];
+    let subject: &str = "Hello World";
+
+    let email: CreateEmailBaseOptions = CreateEmailBaseOptions::new(from, to, subject)
+      .with_html("<p>Congrats on sending your <strong>first email</strong>!</p>");
+
+    let _email: resend_rs::types::CreateEmailResponse = resend.emails.send(email).await?;
+    println!("{:?}", _email);
+
+    // END OF resend email test
+
 
     authenticate_user_response(
         req, user, pool,

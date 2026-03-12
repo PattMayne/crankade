@@ -204,6 +204,22 @@ async fn register_post(
     // TODO: create email template
     // TODO: create a function for this
     // ACTUALLY probably create a whole module
+
+    // PROCESS:
+    // 1. put verification code in database
+    // 2. send verification code via email to actual address
+    // 3. create verification route
+    // 3. verification check updates DB
+
+    // put "create and send verification" in a function
+    // user can send NEW verification
+    // once per minute
+
+    // non-verified accounts cannot create a new game
+    //
+    // "reset password" is really just "login through email"
+    // verification link can STILL be used here to log user in
+
     let resend: Resend = Resend::new("re_FBAtsFyM_AJ8ngP9sNWeiMmPoidB5b9YJ");
 
     let from: &str = "onboarding@resend.dev";

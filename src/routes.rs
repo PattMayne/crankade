@@ -213,8 +213,10 @@ async fn register_post(
     let email: CreateEmailBaseOptions = CreateEmailBaseOptions::new(from, to, subject)
       .with_html("<p>Congrats on sending your <strong>first email</strong>!</p>");
 
-    let _email: resend_rs::types::CreateEmailResponse = resend.emails.send(email).await?;
-    println!("{:?}", _email);
+    match resend.emails.send(email).await {
+        Ok(email) => println!("{:?}", email),
+        Err(e) => println!("Email Error: {:?}", e)
+    };
 
     // END OF resend email test
 

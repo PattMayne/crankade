@@ -72,8 +72,8 @@ CREATE TABLE dev_blog (
 CREATE TABLE verification_codes (
     user_id INT NOT NULL UNIQUE,
     code_hash VARCHAR(255) NOT NULL, -- ten digits, hashed
-    attempts INT DEFAULT 0,
+    attempts INT NOT NULL DEFAULT 0,
     created_timestamp TIMESTAMP NOT NULL DEFAULT UTC_TIMESTAMP,
-    expires_timestamp TIMESTAMP NOT NULL,
+    expires_timestamp TIMESTAMP NOT NULL, -- 5 minutes
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

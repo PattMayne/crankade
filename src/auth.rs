@@ -114,6 +114,23 @@ pub enum AuthError {
     MissingJwtSecret,
 }
 
+pub struct NewVerificationCode {
+    pub user_id: i32,
+    pub raw_code: String,
+    pub code_hash: String,
+    pub created_timestamp: OffsetDateTime,
+    pub expires_timestamp: OffsetDateTime,
+    pub attempts: u8,
+}
+
+pub struct HashedVerificationCode {
+    pub user_id: i32,
+    pub code_hash: String,
+    pub created_timestamp: OffsetDateTime,
+    pub expires_timestamp: OffsetDateTime,
+    pub attempts: i32,
+}
+
 /* 
  * Middleware will insert this struct into every request so the routes
  * know who they're dealing with.
@@ -222,6 +239,21 @@ impl Claims {
     pub fn get_exp(&self) -> usize { self.exp }
 }
 
+
+impl NewVerificationCode {
+    pub fn new(user_id: i32) -> NewVerificationCode {
+        let created_timestamp: OffsetDateTime = OffsetDateTime::now_utc();
+        let expires_timestamp: OffsetDateTime = created_timestamp + Duration::minutes(5);
+        let raw_code: String = generate_code(7);
+        let code_hash: String = hash_password(raw_code.to_owned());
+        let attempts: u8 = 0;
+
+        NewVerificationCode {
+            user_id, raw_code, code_hash,
+            created_timestamp, expires_timestamp, attempts
+        }
+    }
+}
 
 
 /**
@@ -397,6 +429,20 @@ pub fn get_jwt_secret() -> Result<String, std::env::VarError> {
 
 
 
+/**
+ * Generic wrapper for generating codes of arbitrary length
+ */
+pub fn generate_code(length: usize) -> String {
+    rand::rng()
+        .sample_iter(&Alphanumeric)
+        .take(length) // 32 chars
+        .map(char::from)
+        .collect()
+}
+
+
+
+
 
 /* 
  * 
@@ -462,9 +508,6 @@ pub fn verify_password(input_password: &String, stored_hash: &String) -> bool {
 
 
 
-
-
-
 /* 
  * 
  * 
@@ -504,9 +547,5 @@ pub fn verify_password(input_password: &String, stored_hash: &String) -> bool {
  * for verification (before we send the refresh_token to the client app!!!!)
  */
 pub fn generate_auth_code() -> String {
-    rand::rng()
-        .sample_iter(&Alphanumeric)
-        .take(32) // 32 chars
-        .map(char::from)
-        .collect()
+    generate_code(32)
 }

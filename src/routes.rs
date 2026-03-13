@@ -196,9 +196,9 @@ async fn register_post(
             Ok(None) =>  return server_error,
             Err(_e) => return server_error
         };
-
     
-    let email_send: bool = email::send_verification_email(&info.email).await;
+    let _email_sent: bool =
+        email::send_verification_email(&info.username, user_id, &info.email).await;
 
     authenticate_user_response(
         req, user, pool,

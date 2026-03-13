@@ -401,6 +401,20 @@ pub async fn get_redirect_uri(
 }
 
 
+pub async fn get_verification_code(
+    pool: &MySqlPool,
+    user_id: i32
+) -> Result<Option<auth::HashedVerificationCode>> {
+    Ok(sqlx::query_as!(
+        auth::HashedVerificationCode,
+        "SELECT user_id, code_hash, attempts,
+            created_timestamp, expires_timestamp
+            FROM verification_codes WHERE user_id = ?",
+        user_id
+    ).fetch_optional(pool).await?)
+}
+
+
 pub async fn get_user_by_email(
     pool: &MySqlPool,
     email: &String
@@ -862,6 +876,39 @@ pub async fn add_post(
     Ok(result.last_insert_id())
 }
 
+
+/**
+ * Add a new verification code to the DB.
+ */
+pub async fn create_verification_code(
+    pool: &MySqlPool,
+    new_code: auth::NewVerificationCode
+) -> Result<u64, anyhow::Error> {
+
+    // We trust that the data has already been checked. We simply enter it like obedient robots now.
+    // Except that we will turn the bool into an int.
+    let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
+    "INSERT INTO verification_codes (
+            user_id, code_hash, attempts, created_timestamp, expires_timestamp
+        ) VALUES (?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            code_hash = VALUES(token),
+            created_timestamp = VALUES(created_timestamp),
+            expires_timestamp = VALUES(expires_timestamp)
+            attempts = VALUES(attempts);")
+        .bind(new_code.user_id)
+        .bind(new_code.code_hash)
+        .bind(0)
+        .bind(new_code.created_timestamp)
+        .bind(new_code.expires_timestamp)
+        .execute(pool).await.map_err(|e| {
+            eprintln!("Failed to save NEW VERIFICATION CODE to database: {:?}", e);
+            anyhow!("Could not save NEW VERIFICATION CODE to database: {e}")
+        })?;
+    
+    Ok(result.rows_affected())
+}
+
 /* 
  * 
  * 
@@ -920,11 +967,23 @@ pub async fn update_real_names(
 )-> Result<i32, anyhow::Error> {
     let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
     "UPDATE users SET first_name = ?, last_name = ? WHERE id = ?")
-            .bind(first_name)
-            .bind(last_name)
-            .bind(id)
-            .execute(pool)
-            .await?;
+        .bind(first_name)
+        .bind(last_name)
+        .bind(id)
+        .execute(pool)
+        .await?;
+
+    Ok(result.rows_affected() as i32)
+}
+
+
+pub async fn verify_user(pool: &MySqlPool, id: i32)-> Result<i32, anyhow::Error> {
+    let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
+    "UPDATE users SET email_verified = ?, last_name = ? WHERE id = ?")
+        .bind(1)
+        .bind(id)
+        .execute(pool)
+        .await?;
 
     Ok(result.rows_affected() as i32)
 }
@@ -948,13 +1007,13 @@ pub async fn update_post(
             SET title = ?, body = ?, updated_timestamp = ? ,
             pinned = ?
             WHERE id = ?")
-            .bind(post_title)
-            .bind(post_body)
-            .bind(update_time)
-            .bind(pinned_i8)
-            .bind(post_id)
-            .execute(pool)
-            .await?;
+        .bind(post_title)
+        .bind(post_body)
+        .bind(update_time)
+        .bind(pinned_i8)
+        .bind(post_id)
+        .execute(pool)
+        .await?;
 
     Ok(result.rows_affected() as i32)
 }

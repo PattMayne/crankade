@@ -30,7 +30,7 @@ use crate::{
     resources::get_translation,
     db, utils, auth,
     resource_mgr::{
-        HomeTexts, LoginTexts, RegisterTexts, AdminTexts,
+        HomeTexts, LoginTexts, RegisterTexts, AdminTexts, VerifyTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
         ErrorData
      },
@@ -875,10 +875,17 @@ pub async fn auth_home() -> impl Responder {
 #[get("/verify")]
 pub async fn verify(
     pool: web::Data<MySqlPool>,
-    req: HttpRequest
+    req: HttpRequest,
+    query: web::Query<VerifyQuery>
 ) -> impl Responder {
+    let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+
+
     // FIRST check if user is logged in
     // IF LOGGED IN, redirect to DASHBOARD
+    // NO!!!
+    // Maybe they're logged in but NOT YET VERIFIED.
+    // So we must STILL go through the process!
 
     // NEXT check if the code is in the querystring.
     // IF the code is in the querystring, call the AUTH FUNCTION
@@ -889,7 +896,24 @@ pub async fn verify(
     // If NOT LOGGED IN and CODE NOT IN QUERYSTRING:
     // load the template with an input field
 
-    Redirect::to("/auth/login")
+    if query.code.is_some() && query.email.is_some() {
+        let verify_code: String = query.code.to_owned().unwrap();
+        let email: String = query.email.to_owned().unwrap();
+
+        // check the code
+        // either log the user in (and signal redirect to dashboard) (and update VERIFIED in DB)
+        //  ...or else send signal to redirect to error
+    }
+
+
+    let verify_template: VerifyTemplate = VerifyTemplate {
+        texts: VerifyTexts::new(&user_req_data),
+        user: user_req_data,
+    };
+
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(verify_template.render().unwrap())
 }
 
 

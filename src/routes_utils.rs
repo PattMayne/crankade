@@ -222,6 +222,12 @@ pub struct LoginQuery {
 }
 
 #[derive(Deserialize)]
+pub struct VerifyQuery {
+    pub code: Option<String>,
+    pub email: Option<String>,
+}
+
+#[derive(Deserialize)]
 pub struct ClientId {
     pub client_id: String,
 }

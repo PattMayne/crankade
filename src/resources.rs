@@ -108,6 +108,20 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
     "register.btn.en" => "REGISTER",
     "register.btn.fr" => "INSCRIPTION",
 
+    // EMAIL VERIFY PAGE
+    "verify.title.en" => "Enter Verification Code",
+    "verify.title.fr" => "Saisissez le code de vérification",
+    "verify.email.label.en" => " Email:",
+    "verify.email.label.fr" => "E-mail:",
+    "verify.code.en" => "Verification Code",
+    "verify.code.fr" => "Code de vérification",
+    "verify.submit_btn.en" => "Submit",
+    "verify.submit_btn.fr" => "Soumettre",
+    "verify.empty.label.en" => "Leave this field empty:",
+    "verify.empty.label.fr" => "Laissez ce champ vide:",
+    "verify.message.en" => "Enter your email and your verification code.",
+    "verify.message.fr" => "Saisissez votre adresse e-mail et votre code de vérification.",
+
     // DEV BLOG
     "blog.title.en" => "DEVELOPER BLOG",
     "blog.title.fr" => "BLOG DU DÉVELOPPEUR",

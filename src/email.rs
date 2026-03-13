@@ -1,10 +1,12 @@
 use resend_rs::types::CreateEmailBaseOptions;
-use resend_rs::{Resend, Result};
+use resend_rs::{ Resend };
+use sqlx::{ MySqlPool };
 
 use crate::{ db, auth };
 
 
 pub async fn send_verification_email(
+    pool: &MySqlPool,
     username: &str,
     user_id: i32,
     email_address: &str
@@ -12,10 +14,20 @@ pub async fn send_verification_email(
     // first get the verification code
     let new_verification_code: auth::NewVerificationCode = auth::NewVerificationCode::new(user_id);
 
+    // save verification code to database
+    let code_saved: bool =
+        match db::create_verification_code(&pool, &new_verification_code).await {
+            Ok(rows_affected) => rows_affected > 0,
+            Err(e) => {
+                eprintln!("Database Error: Failed to save verification code: {:?}", e);
+                false
+            }
+        };
+
     // TODO: create email template (askama). Use inline CSS.
     let email_body: String =
     format!(
-        "<h3>Welcome to Crankade, {}!<br>
+        "<h3>Welcome to Crankade, {}!</h3><br>
             <p>Your verification code is {}. 
             It expires in five minutes.",
         username,
@@ -23,9 +35,8 @@ pub async fn send_verification_email(
     );
 
     // PROCESS:
-    // 1. put verification code in database
-    // 2. send verification code via email to actual address
-    // 3. create verification route
+    // 2. create verification route
+    // 2    send LINK to verification route
     // 3. verification check updates DB
     // 4. Use askama template
 

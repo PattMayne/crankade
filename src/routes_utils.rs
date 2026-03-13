@@ -35,7 +35,7 @@ use crate::{
     resource_mgr::{
         HomeTexts, LoginTexts, RegisterTexts, AdminTexts, BlogTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
-        NewPostTexts, EditPostTexts,
+        NewPostTexts, EditPostTexts, VerifyTexts,
         ErrorData, error_by_code
      }
 };
@@ -375,6 +375,16 @@ pub struct HomeTemplate {
     pub client_links: Vec<db::ClientLinkData>,
     pub pinned_post: Option<String>,
 }
+
+
+#[derive(Template)]
+#[template(path ="verify.html")]
+pub struct VerifyTemplate {
+    pub texts: VerifyTexts,
+    pub user: auth::UserReqData,
+}
+
+
 
 
 #[derive(Template)]

@@ -198,7 +198,7 @@ async fn register_post(
         };
     
     let _email_sent: bool =
-        email::send_verification_email(&info.username, user_id, &info.email).await;
+        email::send_verification_email(&pool, &info.username, user_id, &info.email).await;
 
     authenticate_user_response(
         req, user, pool,
@@ -872,6 +872,25 @@ pub async fn auth_home() -> impl Responder {
     Redirect::to("/auth/login")
 }
 
+#[get("/verify")]
+pub async fn verify(
+    pool: web::Data<MySqlPool>,
+    req: HttpRequest
+) -> impl Responder {
+    // FIRST check if user is logged in
+    // IF LOGGED IN, redirect to DASHBOARD
+
+    // NEXT check if the code is in the querystring.
+    // IF the code is in the querystring, call the AUTH FUNCTION
+    // to CHECK THE STRING, and redirect based on the result
+
+    // either way NO TEMPLATE IF LOGGED IN or CODE IN QUERY STRING
+
+    // If NOT LOGGED IN and CODE NOT IN QUERYSTRING:
+    // load the template with an input field
+
+    Redirect::to("/auth/login")
+}
 
 
 /* ROOT DOMAIN */

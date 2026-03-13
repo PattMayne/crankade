@@ -882,7 +882,7 @@ pub async fn add_post(
  */
 pub async fn create_verification_code(
     pool: &MySqlPool,
-    new_code: auth::NewVerificationCode
+    new_code: &auth::NewVerificationCode
 ) -> Result<u64, anyhow::Error> {
 
     // We trust that the data has already been checked. We simply enter it like obedient robots now.
@@ -897,7 +897,7 @@ pub async fn create_verification_code(
             expires_timestamp = VALUES(expires_timestamp)
             attempts = VALUES(attempts);")
         .bind(new_code.user_id)
-        .bind(new_code.code_hash)
+        .bind(new_code.code_hash.to_owned())
         .bind(0)
         .bind(new_code.created_timestamp)
         .bind(new_code.expires_timestamp)

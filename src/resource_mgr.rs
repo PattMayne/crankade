@@ -239,12 +239,46 @@ impl EditPostTexts {
             "edit_post.title", &user_req_data.lang, None);
         let nav: NavTexts = NavTexts::new(lang);
 
-        EditPostTexts {
-            title,
-            nav
-        }
+        EditPostTexts { title, nav }
     }
 }
+
+
+/**
+ * route: get "/verify"
+ */
+pub struct VerifyTexts {
+    pub title: String,
+    pub email: String,
+    pub code: String,
+    pub submit_btn: String,
+    pub empty_field: String,
+    pub message: String,
+    pub nav: NavTexts,
+}
+
+
+impl VerifyTexts {
+    pub fn new(user_req_data: &UserReqData) -> VerifyTexts {
+        let lang: &SupportedLangs = &user_req_data.lang;
+        let title: String = get_translation(
+            "verify.title", &user_req_data.lang, None);
+        let email: String = get_translation(
+            "verify.email.label", &user_req_data.lang, None);
+        let code: String = get_translation(
+            "verify.code", &user_req_data.lang, None);
+        let submit_btn: String = get_translation(
+            "verify.submit_btn", &user_req_data.lang, None);
+        let empty_field: String = get_translation(
+            "verify.empty.label", &user_req_data.lang, None);
+        let message: String = get_translation(
+            "verify.message.label", &user_req_data.lang, None);
+        let nav: NavTexts = NavTexts::new(lang);
+
+        VerifyTexts { title, email, code, submit_btn, nav, empty_field, message }
+    }
+}
+
 
 
 

@@ -890,7 +890,7 @@ pub async fn create_verification_code(
     let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
     "INSERT INTO verification_codes (
             user_id, code_hash, attempts, created_timestamp, expires_timestamp
-        ) VALUES (?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
             code_hash = VALUES(code_hash),
             created_timestamp = VALUES(created_timestamp),

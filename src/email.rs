@@ -25,7 +25,7 @@ pub async fn send_verification_email(
         };
 
     let verification_link: String = format!(
-        "https://crankword.com/verify?email={}&code={}",
+        "https://crankade.com/verify?email={}&code={}",
             email_address, &new_verification_code.raw_code
     );
 

@@ -872,30 +872,23 @@ pub async fn auth_home() -> impl Responder {
     Redirect::to("/auth/login")
 }
 
+/**
+ * The page where the user comes to verify their email address.
+ * We assume they received an email with a verification code.
+ * The email and code might arrive by querystring,
+ * in which case validate, verify, and redirect to dashboard.
+ * Otherwise load a template where they can enter the info.
+ */
 #[get("/verify")]
 pub async fn verify(
     pool: web::Data<MySqlPool>,
     req: HttpRequest,
     query: web::Query<VerifyQuery>
 ) -> HttpResponse {
+    // It doesn't matter is user is already logged in. Must still verify email.
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
 
-
-    // FIRST check if user is logged in
-    // IF LOGGED IN, redirect to DASHBOARD
-    // NO!!!
-    // Maybe they're logged in but NOT YET VERIFIED.
-    // So we must STILL go through the process!
-
-    // NEXT check if the code is in the querystring.
-    // IF the code is in the querystring, call the AUTH FUNCTION
-    // to CHECK THE STRING, and redirect based on the result
-
-    // either way NO TEMPLATE IF LOGGED IN or CODE IN QUERY STRING
-
-    // If NOT LOGGED IN and CODE NOT IN QUERYSTRING:
-    // load the template with an input field
-
+    // Can user be verified by querystring input? If so, no remplate. Verify and redirect
     if query.code.is_some() && query.email.is_some() {
         let verify_code: String = query.code.to_owned().unwrap();
         let email: String = query.email.to_owned().unwrap();
@@ -945,7 +938,7 @@ pub async fn verify(
         }
     }
 
-
+    // User was NOT verified by querystring. So load template
     let verify_template: VerifyTemplate = VerifyTemplate {
         texts: VerifyTexts::new(&user_req_data),
         user: user_req_data,

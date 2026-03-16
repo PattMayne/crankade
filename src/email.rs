@@ -15,7 +15,7 @@ pub async fn send_verification_email(
     let new_verification_code: auth::NewVerificationCode = auth::NewVerificationCode::new(user_id);
 
     // save verification code to database
-    let code_saved: bool =
+    let _code_saved: bool =
         match db::create_verification_code(&pool, &new_verification_code).await {
             Ok(rows_affected) => rows_affected > 0,
             Err(e) => {

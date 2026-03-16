@@ -896,49 +896,36 @@ pub async fn verify(
         let verify_code: String = query.code.to_owned().unwrap();
         let email: String = query.email.to_owned().unwrap();
 
+        /*  check the code
+            either log the user in (and redirect to dashboard) (and update VERIFIED in DB)
+            ...or skip and load the page for manual attempt */
 
-        println!("QUERY STUFF PRESENT. CODE: {}, EMAIL: {}", verify_code, email);
-
-        // check the code
-        // either log the user in (and signal redirect to dashboard) (and update VERIFIED in DB)
-        //  ...or else send signal to redirect to error
-
-        // to avoid nesting if statements, use a labeled block which returns a bool
+        // to avoid nested ifs, using labeled block which returns an Option containing User
         let validated_user: Option<db::User> = 'query_validation_block: {
 
             let user: db::User =
                 match db::get_user_by_email(&pool, &email).await {
                     Ok(Some(user)) => user,
-                    _ => {
-                        println!("failed to find user");
-                        break 'query_validation_block None
-                    }
+                    _ => break 'query_validation_block None
                 };
 
-            // check the verify code
+            // get the saved, hashed verify code
             let code_hash: String =
                 match db::get_verification_code(&pool, user.get_id()).await {
                     Ok(Some(hashed_code)) => hashed_code.code_hash,
-                    _ => {
-                        println!("code present, but failed to verify");
-                        break 'query_validation_block None
-                    }
+                    _ => break 'query_validation_block None
                 };
             
+            // compare entered verify code to saved, hashed code, and return User if match.
             if auth::verify_password(&verify_code, &code_hash) {
                 Some(user)
-            } else {
-                println!("User ({}) exists, but failed to verify password", user.get_username());
-                None
-            }
+            } else { None }
         };
 
-        // validate user, give them cookies, redirect (to dashboard)
+        // verify email give them cookies, redirect (to dashboard)
         if let Some(user) = validated_user {
-            println!("User ({}) validated by query", user.get_username());
-
             // verify user email:
-            let email_verified: bool =
+            let _email_verified: bool =
                 match db::verify_user(&pool, user.get_id()).await {
                     Ok(affected_count) => affected_count > 0,
                     Err(e) => {
@@ -947,6 +934,7 @@ pub async fn verify(
                     }
                 };
 
+            // redirect to dash with auth cookies
             return authenticate_user_response(
                 req, user, pool,
                 utils::auth_client_id(),

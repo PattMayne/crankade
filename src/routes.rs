@@ -877,7 +877,7 @@ pub async fn verify(
     pool: web::Data<MySqlPool>,
     req: HttpRequest,
     query: web::Query<VerifyQuery>
-) -> impl Responder {
+) -> HttpResponse {
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
 
 
@@ -903,6 +903,46 @@ pub async fn verify(
         // check the code
         // either log the user in (and signal redirect to dashboard) (and update VERIFIED in DB)
         //  ...or else send signal to redirect to error
+
+        // to avoid nesting if statements, use a labeled block which returns a bool
+        let validated_user: Option<db::User> = 'query_validation_block: {
+
+            let user: db::User =
+                match db::get_user_by_email(&pool, &email).await {
+                    Ok(Some(user)) => user,
+                    _ => break 'query_validation_block None
+                };
+
+            // check the verify code
+            let code_hash: String =
+                match db::get_verification_code(&pool, user.get_id()).await {
+                    Ok(Some(hashed_code)) => hashed_code.code_hash,
+                    _ => break 'query_validation_block None
+                };
+            
+            if auth::verify_password(&verify_code, &code_hash) {
+                Some(user)
+            } else { None }
+        };
+
+        // validate user, give them cookies, redirect (to dashboard)
+        if let Some(user) = validated_user {
+
+            // verify user email:
+            let email_verified: bool =
+                match db::verify_user(&pool, user.get_id()).await {
+                    Ok(affected_count) => affected_count > 0,
+                    Err(e) => {
+                        eprint!("Error verifying user: {}", e);
+                        false
+                    }
+                };
+
+            return authenticate_user_response(
+                req, user, pool,
+                utils::auth_client_id()
+            ).await
+        }
     }
 
 

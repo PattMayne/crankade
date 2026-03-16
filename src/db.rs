@@ -254,6 +254,10 @@ impl User {
         &self.password_hash
     }
 
+    pub fn get_email(&self) -> &String {
+        &self.email
+    }
+
     pub fn get_id(&self) -> i32 { self.id }
     pub fn get_role(&self) -> &String { &self.role }
     pub fn get_username(&self) -> &String { &self.username }

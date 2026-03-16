@@ -894,7 +894,7 @@ pub async fn create_verification_code(
         ON DUPLICATE KEY UPDATE
             code_hash = VALUES(code_hash),
             created_timestamp = VALUES(created_timestamp),
-            expires_timestamp = VALUES(expires_timestamp)
+            expires_timestamp = VALUES(expires_timestamp),
             attempts = VALUES(attempts);")
         .bind(new_code.user_id)
         .bind(new_code.code_hash.to_owned())

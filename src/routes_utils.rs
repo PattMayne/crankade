@@ -542,23 +542,24 @@ pub async fn authenticate_user_response(
      * or send them to their chosen client site.
      */
     if client_id == utils::auth_client_id() {
-        // client_id is auth_site login now and redirect
-        // User may now receive JWT and refresh token.
-        HttpResponse::Ok()
-            .cookie(two_auth_cookies.jwt_cookie)
-            .cookie(two_auth_cookies.refresh_token_cookie)
-            .json(FreshLoginData {
-                username: user.get_username().to_owned()
-        })
-    } else if go_to_dash {
-        // redirect to ERROR PAGE
-        HttpResponse::Found()
-            .cookie(two_auth_cookies.jwt_cookie)
-            .cookie(two_auth_cookies.refresh_token_cookie)
-            .append_header((header::LOCATION, "/dashboard"))
-            .finish()
-    }
-    else {
+        if go_to_dash {
+            // redirect to DASHBOARD
+            HttpResponse::Found()
+                .cookie(two_auth_cookies.jwt_cookie)
+                .cookie(two_auth_cookies.refresh_token_cookie)
+                .append_header((header::LOCATION, "/dashboard"))
+                .finish()
+        } else {
+            // client_id is auth_site login now and redirect
+            // User may now receive JWT and refresh token.
+            HttpResponse::Ok()
+                .cookie(two_auth_cookies.jwt_cookie)
+                .cookie(two_auth_cookies.refresh_token_cookie)
+                .json(FreshLoginData {
+                    username: user.get_username().to_owned()
+            })
+        }
+    } else {
         // It's an external site. So let's get an auth_token and redirect
         post_auth_client_site_redirect(
             req, user.get_id(),

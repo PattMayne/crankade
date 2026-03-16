@@ -894,6 +894,9 @@ pub async fn verify(
         let verify_code: String = query.code.to_owned().unwrap();
         let email: String = query.email.to_owned().unwrap();
 
+
+        println!("QUERY STUFF PRESENT. CODE: {}, EMAIL: {}", verify_code, email);
+
         // check the code
         // either log the user in (and signal redirect to dashboard) (and update VERIFIED in DB)
         //  ...or else send signal to redirect to error
@@ -904,14 +907,20 @@ pub async fn verify(
             let user: db::User =
                 match db::get_user_by_email(&pool, &email).await {
                     Ok(Some(user)) => user,
-                    _ => break 'query_validation_block None
+                    _ => {
+                        println!("failed to find user");
+                        break 'query_validation_block None
+                    }
                 };
 
             // check the verify code
             let code_hash: String =
                 match db::get_verification_code(&pool, user.get_id()).await {
                     Ok(Some(hashed_code)) => hashed_code.code_hash,
-                    _ => break 'query_validation_block None
+                    _ => {
+                        println!("code present, but failed to verify");
+                        break 'query_validation_block None
+                    }
                 };
             
             if auth::verify_password(&verify_code, &code_hash) {

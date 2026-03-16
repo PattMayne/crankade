@@ -917,9 +917,16 @@ pub async fn verify(
                 };
             
             // compare entered verify code to saved, hashed code, and return User if match.
-            if auth::verify_password(&verify_code, &code_hash) {
+            let code_match: bool = auth::verify_password(&verify_code, &code_hash);
+
+            if code_match {
                 Some(user)
-            } else { None }
+            } else {
+                // increment attemps and return None
+                let _new_attempts_count_result: Result<i32, anyhow::Error> =
+                    db::increment_verification_attempt(&pool, user.get_id()).await;
+                None
+            }
         };
 
         // verify email give them cookies, redirect (to dashboard)

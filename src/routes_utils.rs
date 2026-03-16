@@ -526,6 +526,7 @@ pub async fn authenticate_user_response(
     user: db::User,
     pool: web::Data<MySqlPool>,
     client_id: String,
+    go_to_dash: bool
 ) -> HttpResponse {
     // get cookies for local login
     let two_auth_cookies: TwoAuthCookies =
@@ -549,7 +550,15 @@ pub async fn authenticate_user_response(
             .json(FreshLoginData {
                 username: user.get_username().to_owned()
         })
-    } else {
+    } else if go_to_dash {
+        // redirect to ERROR PAGE
+        HttpResponse::Found()
+            .cookie(two_auth_cookies.jwt_cookie)
+            .cookie(two_auth_cookies.refresh_token_cookie)
+            .append_header((header::LOCATION, "/dashboard"))
+            .finish()
+    }
+    else {
         // It's an external site. So let's get an auth_token and redirect
         post_auth_client_site_redirect(
             req, user.get_id(),

@@ -203,7 +203,8 @@ async fn register_post(
 
     authenticate_user_response(
         req, user, pool,
-        info.client_id.clone()
+        info.client_id.clone(),
+        false
     ).await
 }
 
@@ -271,7 +272,8 @@ async fn login_post(
 
     authenticate_user_response(
         req, user, pool,
-        info.client_id.clone()
+        info.client_id.clone(),
+        false
     ).await
 }
 
@@ -925,11 +927,15 @@ pub async fn verify(
             
             if auth::verify_password(&verify_code, &code_hash) {
                 Some(user)
-            } else { None }
+            } else {
+                println!("User ({}) exists, but failed to verify password", user.get_username());
+                None
+            }
         };
 
         // validate user, give them cookies, redirect (to dashboard)
         if let Some(user) = validated_user {
+            println!("User ({}) validated by query", user.get_username());
 
             // verify user email:
             let email_verified: bool =
@@ -943,7 +949,8 @@ pub async fn verify(
 
             return authenticate_user_response(
                 req, user, pool,
-                utils::auth_client_id()
+                utils::auth_client_id(),
+                true
             ).await
         }
     }

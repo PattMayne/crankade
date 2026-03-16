@@ -979,7 +979,7 @@ pub async fn update_real_names(
 
 pub async fn verify_user(pool: &MySqlPool, id: i32)-> Result<i32, anyhow::Error> {
     let result: sqlx::mysql::MySqlQueryResult = sqlx::query(
-    "UPDATE users SET email_verified = ?, last_name = ? WHERE id = ?")
+    "UPDATE users SET email_verified = ? WHERE id = ?")
         .bind(1)
         .bind(id)
         .execute(pool)

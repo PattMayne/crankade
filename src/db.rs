@@ -892,7 +892,7 @@ pub async fn create_verification_code(
             user_id, code_hash, attempts, created_timestamp, expires_timestamp
         ) VALUES (?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
-            code_hash = VALUES(token),
+            code_hash = VALUES(code_hash),
             created_timestamp = VALUES(created_timestamp),
             expires_timestamp = VALUES(expires_timestamp)
             attempts = VALUES(attempts);")

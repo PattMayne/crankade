@@ -24,14 +24,21 @@ pub async fn send_verification_email(
             }
         };
 
+    let verification_link: String = format!(
+        "https://crankword.com/verify?email={}&code={}",
+            email_address, &new_verification_code.raw_code
+    );
+
     // TODO: create email template (askama). Use inline CSS.
     let email_body: String =
     format!(
         "<h3>Welcome to Crankade, {}!</h3><br>
             <p>Your verification code is {}. 
-            It expires in five minutes.",
+            It expires in five minutes.</p>
+            <p>Or follow <a href='{}'>this link.</a>",
         username,
-        new_verification_code.raw_code
+        new_verification_code.raw_code,
+        verification_link
     );
 
     // PROCESS:

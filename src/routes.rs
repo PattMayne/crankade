@@ -197,6 +197,7 @@ async fn register_post(
             Err(_e) => return server_error
         };
     
+    // Send verification email.
     let _email_sent: bool =
         email::send_verification_email(&pool, &info.username, user_id, &info.email).await;
 
@@ -1319,6 +1320,7 @@ pub async fn dashboard_page(
                 .body(dashboard_template.render().unwrap());
         },
         Ok(None) => {
+            eprintln!("Failed to find user");
             return send_to_login();
         },
         Err(_e) => {

@@ -19,6 +19,12 @@
             <div class="large-12 cell">
                 <h1>{{ texts.title }}</h1>
                 <p>{{texts.message}}</p>
+                {% if user_data.get_email_verified() %}
+                    <p>EMAIL VERIFIED</p>
+                {% else %}
+                    <p>EMAIL NOT VERIFIED.</p>
+                    <p>Email should have been sent. Check your inbox. Or click Here to send new verification email.</p>
+                {% endif %}
             </div>
 
             <div class="large-12 cell">

@@ -77,19 +77,6 @@ pub struct BlogPost {
 }
 
 
-impl BlogPost {
-    pub fn get_formatted_updated_timestamp(&self) -> String {
-        let format: &[time::format_description::BorrowedFormatItem<'_>] =
-            format_description!("[year]-[month]-[day] [hour]:[minute]");
-        self.updated_timestamp.format(&format).unwrap()
-    }
-
-    pub fn is_pinned(&self) -> bool {
-        self.pinned == 1
-    }
-}
-
-
 #[derive(serde::Serialize)]
 pub struct Username {
     pub username: String,
@@ -204,6 +191,19 @@ pub struct RedirectUri {
 impl ClientData {
     pub fn get_is_active(&self) -> bool { self.is_active == 1 }
     pub fn get_is_internal(&self) -> bool { self.is_internal == 1 }
+}
+
+
+impl BlogPost {
+    pub fn get_formatted_updated_timestamp(&self) -> String {
+        let format: &[time::format_description::BorrowedFormatItem<'_>] =
+            format_description!("[year]-[month]-[day] [hour]:[minute]");
+        self.updated_timestamp.format(&format).unwrap()
+    }
+
+    pub fn is_pinned(&self) -> bool {
+        self.pinned == 1
+    }
 }
 
 

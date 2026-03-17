@@ -184,6 +184,13 @@ pub async fn verify_post(
             false
         ).await
     } else {
+
+        // Wrong code. Increment attempts.
+        let _inc_obj_result: Result<auth::HashedVerificationCode, anyhow::Error> =
+            db::increment_verification_attempt(
+                &pool, user.get_id(), Some(code_hash_obj)
+            ).await;
+        
         let message: String = "The code does not match. 
             Get the correct code from your email, or request a new one.".to_string();
         let error_struct: ErrorResponse = ErrorResponse { error: message, code: 401 };
@@ -1049,14 +1056,17 @@ pub async fn verify(
             }
 
             // compare entered verify code to saved, hashed code, and return User if match.
-            let code_match: bool = auth::verify_password(&verify_code, &code_hash_obj.code_hash);
+            let code_match: bool =
+                auth::verify_password(&verify_code, &code_hash_obj.code_hash);
 
             if code_match {
                 Some(user)
             } else {
                 // increment attemps and return None
-                let _new_attempts_count_result: Result<auth::HashedVerificationCode, anyhow::Error> =
-                    db::increment_verification_attempt(&pool, user.get_id(), None).await;
+                let _inc_obj_result: Result<auth::HashedVerificationCode, anyhow::Error> =
+                    db::increment_verification_attempt(
+                        &pool, user.get_id(), Some(code_hash_obj)
+                    ).await;
                 None
             }
         };

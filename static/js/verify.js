@@ -57,7 +57,6 @@ async function submit_verify() {
             }
             return response.json()
         }).then(data => {
-        console.log("data: ", data)
         if (!!data.username){
             window.location.href = "/dashboard";
         } else if (!!data.redirect_uri) {
@@ -100,12 +99,13 @@ async function request_new_code() {
     })
 }
 
-
-
 document.addEventListener('DOMContentLoaded', async () => {
     let new_code_req_btn = document.getElementById("new_code_req_btn")
     let verify_btn = document.getElementById("submit_verify")
 
     new_code_req_btn.addEventListener('click', () => request_new_code())
     !!verify_btn && verify_btn.addEventListener('click', () => submit_verify())
+
+    document.getElementById('email').addEventListener('keydown', (e) => (e.key === 'Enter') && submit_verify())
+    document.getElementById('v_code').addEventListener('keydown', (e) => (e.key === 'Enter') && submit_verify())
 })

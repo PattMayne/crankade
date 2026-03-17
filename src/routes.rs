@@ -113,6 +113,87 @@ async fn link_to_client(
 
 
 
+#[post("verify_post")]
+pub async fn verify_post(
+    pool: web::Data<MySqlPool>,
+    req: HttpRequest,
+    info: web::Json<VerifyQuery>
+) -> HttpResponse {
+    // If info is missing, get out and signal user
+    if info.code.is_none() || info.email.is_none() {
+        return error_post_response(&req, 422)
+    }
+
+    let verify_code: String = info.code.to_owned().unwrap();
+    let email: String = info.email.to_owned().unwrap();
+
+    /*  check the code
+        either log the user in (and redirect to dashboard) (and update VERIFIED in DB)
+        ...or skip and load the page for manual attempt */
+
+    let user: db::User =
+        match db::get_user_by_email(&pool, &email).await {
+            Ok(Some(user)) => user,
+            Ok(None) => return error_post_response(&req, 404),
+            Err(e) => {
+                eprintln!("DB Error: {}", e);
+                return error_post_response(&req, 500)
+            }
+        };
+
+    // get the saved, hashed verify code
+    let code_hash_obj: auth::HashedVerificationCode =
+        match db::get_verification_code(&pool, user.get_id()).await {
+            Ok(Some(code_hash_obj)) => code_hash_obj,
+            Ok(None) => return error_post_response(&req, 404),
+            Err(e) => {
+                eprintln!("DB Error: {}", e);
+                return error_post_response(&req, 500)
+            }
+        };
+    
+    if code_hash_obj.has_exceeded_attempts() {
+        let message = "You did that too many times. Please wait one minute before requesting a new code.".to_string();
+        let error_struct: ErrorResponse = ErrorResponse { error: message, code: 429 };
+        return HttpResponse::TooManyRequests().json(error_struct)
+    } else if code_hash_obj.is_expired() {
+        let message: String = "Your code has expired. You may request a new code.".to_string();
+        let error_struct: ErrorResponse = ErrorResponse { error: message, code: 400 };
+        return HttpResponse::TooManyRequests().json(error_struct)
+    }
+
+    // compare entered verify code to saved, hashed code, and return User if match.
+    let code_match: bool = auth::verify_password(&verify_code, &code_hash_obj.code_hash);
+
+    // if match, log user in. Otherwise, send rejection.
+    if code_match {
+         // verify user email:
+        let _email_verified: bool =
+            match db::verify_user(&pool, user.get_id()).await {
+                Ok(affected_count) => affected_count > 0,
+                Err(e) => {
+                    eprint!("Error verifying user: {}", e);
+                    false
+                }
+            };
+
+        // set cookies, signal to redirect to dash
+        return authenticate_user_response(
+            req, user, pool,
+            utils::auth_client_id(),
+            false
+        ).await
+    } else {
+        let message: String = "The code does not match. 
+            Get the correct code from your email, or request a new one.".to_string();
+        let error_struct: ErrorResponse = ErrorResponse { error: message, code: 401 };
+        return HttpResponse::TooManyRequests().json(error_struct)
+    }
+   
+}
+
+
+
 /** REGISTER
  * The user/client calls this API to register.
  * We get user data, check it against regex for formatting,

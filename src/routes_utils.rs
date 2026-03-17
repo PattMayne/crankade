@@ -747,6 +747,7 @@ pub fn error_post_response(req: &HttpRequest, code: u16) -> HttpResponse {
         401 => HttpResponse::Unauthorized().json(e_struct),
         403 => HttpResponse::Forbidden().json(e_struct),
         400 => HttpResponse::BadRequest().json(e_struct),
+        429 => HttpResponse::TooManyRequests().json(e_struct),
         _ => HttpResponse::BadRequest().json(e_struct),
     }
 }

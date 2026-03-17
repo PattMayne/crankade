@@ -31,33 +31,23 @@ async function submit_verify() {
             .then(response => {
                 if (!response.ok) {
                     response.json().then(data => {
-    
-                        if (!!data.code) {
-                            if (data.code == 422){
-                                // If inputs were unacceptable, backend informs us, we show the message.
-                                !data.names_valid && msgs.push(utils.password_reqs_msg)
-                            } else if (data.code == 401){
-                                // User is not authenticated
-                                globals.logout()
-                            } else {
-                                let msg = (!!data.code) ? (data.code.toString() + " ") : ""
-                                msg += (!!data.error) ? data.error : " Error occurred"
-                                msgs.push(msg)
-                            }
-                        } else { msgs.push("Error.") }
+                        const msg = !!data.error && !!data.code ?
+                            "<h3>" + data.code + "</h3><p>" + data.error + "</p>" :
+                            "Error Occurred"
+                        msgs.push(msg)
                         show_msg_box()
                     })
-    
+
                     throw new Error("Inputs invalid or server error.")
                 }
                 return response.json()
-            }).then(update_data => {
-                if (!!update_data.success) {
-                    msgs.push("Password updated.")
-                } else {
-                    msgs.push("Update failed.")
-                }
-                show_msg_box()
+            }).then(data => {
+            console.log("data: ", data)
+            if (!!data.username){
+                window.location.href = "/dashboard";
+            } else if (!!data.redirect_uri) {
+                window.location.href = data.redirect_uri
+            }
             }).catch(error => {
                 console.log('Error: ', error)
             })

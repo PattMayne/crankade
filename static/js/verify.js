@@ -24,33 +24,48 @@ const show_msg_box = () => {
 
 async function submit_verify() {
     console.log("SUBMITTING VERIFICATION DATA")
+    const route = "/verify_post"
 
-        const route = "/verify_post"
-    
-        await utils.fetch_json_post(route,password_obj)
-            .then(response => {
-                if (!response.ok) {
-                    response.json().then(data => {
-                        const msg = !!data.error && !!data.code ?
-                            "<h3>" + data.code + "</h3><p>" + data.error + "</p>" :
-                            "Error Occurred"
-                        msgs.push(msg)
-                        show_msg_box()
-                    })
+    const email_el = document.getElementById("email")
+    const code_el = document.getElementById("v_code")
+    const email = !!email_el ? email_el.value.trim() : ""
+    const code = !!code_el ? code_el.value.trim() : ""
 
-                    throw new Error("Inputs invalid or server error.")
-                }
-                return response.json()
-            }).then(data => {
-            console.log("data: ", data)
-            if (!!data.username){
-                window.location.href = "/dashboard";
-            } else if (!!data.redirect_uri) {
-                window.location.href = data.redirect_uri
+    if (!email || !code) {
+        msgs.push("Please enter email and verification code")
+        show_msg_box()
+        return
+    }
+
+    let code_obj = {
+        "email": email.toString(),
+        "code": code.toString()
+    }
+
+    await utils.fetch_json_post(route,code_obj)
+        .then(response => {
+            if (!response.ok) {
+                response.json().then(data => {
+                    const msg = !!data.error && !!data.code ?
+                        "<h3>" + data.code + "</h3><p>" + data.error + "</p>" :
+                        "Error Occurred"
+                    msgs.push(msg)
+                    show_msg_box()
+                })
+
+                throw new Error("Inputs invalid or server error.")
             }
-            }).catch(error => {
-                console.log('Error: ', error)
-            })
+            return response.json()
+        }).then(data => {
+        console.log("data: ", data)
+        if (!!data.username){
+            window.location.href = "/dashboard";
+        } else if (!!data.redirect_uri) {
+            window.location.href = data.redirect_uri
+        }
+        }).catch(error => {
+            console.log('Error: ', error)
+        })
 }
 
 async function request_new_code() {

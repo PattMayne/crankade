@@ -2,7 +2,7 @@ use jsonwebtoken::{
     encode, Header, EncodingKey, decode, dangerous::insecure_decode,
     DecodingKey, Validation, Algorithm, errors::{ Error, ErrorKind} };
 use serde::{ Serialize, Deserialize };
-use time::{ Duration, OffsetDateTime };
+use time::{ Duration, OffsetDateTime, UtcDateTime };
 use actix_web::{ HttpMessage, HttpRequest, cookie::{Cookie, SameSite}};
 use rand::{distr::Alphanumeric, Rng};
 use std::fmt;
@@ -176,6 +176,23 @@ impl std::error::Error for AuthError {
             AuthError::Jwt(err) => Some(err),
             AuthError::MissingJwtSecret => None,
         }
+    }
+}
+
+impl HashedVerificationCode {
+    pub const MAX_ATTEMPTS: i32 = 5;
+    pub const NEW_REQ_TIME_LIMIT: Duration = Duration::minutes(1);
+
+    pub fn has_exceeded_attempts(&self) -> bool {
+        self.attempts >= Self::MAX_ATTEMPTS
+    }
+
+    pub fn is_expired(&self) -> bool {
+        self.expires_timestamp < UtcDateTime::now()
+    }
+
+    pub fn can_request_new(&self) -> bool {
+        self.created_timestamp < UtcDateTime::now() + Self::NEW_REQ_TIME_LIMIT
     }
 }
 

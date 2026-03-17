@@ -150,6 +150,11 @@ pub struct FullRedirectUri {
     pub redirect_uri: String,
 }
 
+#[derive(Serialize)]
+pub struct Message {
+    pub message: String,
+}
+
 
 impl LogoutData {
     pub fn new() -> Self {
@@ -243,6 +248,10 @@ pub struct RegisterCredentials {
     pub website: String,
 }
 
+#[derive(Deserialize)]
+pub struct NewCodeRequest {
+    pub email: String,
+}
 
 // Store credentials when a user tries to login
 #[derive(Deserialize)]
@@ -388,6 +397,8 @@ pub struct HomeTemplate {
 pub struct VerifyTemplate {
     pub texts: VerifyTexts,
     pub user: auth::UserReqData,
+    pub message: String,
+    pub request_new_code: bool,
 }
 
 
@@ -716,6 +727,28 @@ pub fn return_not_found_err_json() -> HttpResponse {
         error: String::from("Not Found"),
         code: 406
     })
+}
+
+fn error_post_struct(req: &HttpRequest, code: u16) -> ErrorResponse {
+    let lang: &utils::SupportedLangs = &auth::get_user_req_data(&req).clone_lang();
+    let code_str: String = code.to_string();
+    let keyword: String = format!("err.{}.title", code_str);
+    let error: String = get_translation(&keyword, &lang, None);
+
+    ErrorResponse { code, error }
+}
+
+pub fn error_post_response(req: &HttpRequest, code: u16) -> HttpResponse {
+    let e_struct: ErrorResponse = error_post_struct(req, code);
+
+    match code {
+        500 => HttpResponse::InternalServerError().json(e_struct),
+        404 => HttpResponse::NotFound().json(e_struct),
+        401 => HttpResponse::Unauthorized().json(e_struct),
+        403 => HttpResponse::Forbidden().json(e_struct),
+        400 => HttpResponse::BadRequest().json(e_struct),
+        _ => HttpResponse::BadRequest().json(e_struct),
+    }
 }
 
 

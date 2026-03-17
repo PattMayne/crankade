@@ -17,10 +17,15 @@
         <div class="grid-x grid-padding-x">
             <div class="large-12 cell">
                 <h1>{{ texts.title }}</h1>
-                <p>{{ texts.message }}</p>
             </div>
 
             <div class="large-12 cell">
+
+                <div class="callout primary" id="msg_box">
+                    {{ message }}
+                </div>
+
+                {% if !request_new_code %}
                 <div class="callout">
                     <form>
                         <div class="grid-x grid-padding-x">
@@ -59,9 +64,12 @@
 
                     </form>
                 </div>
+                {% endif %}
 
-                <div class="callout primary hidden" id="msg_box">
+                <div class="callout primary">
+                    <a class="button small" id="new_code_req_btn">REQUEST NEW CODE</a>
                 </div>
+
             </div>
 
         </div> <!-- end of grid-x -->

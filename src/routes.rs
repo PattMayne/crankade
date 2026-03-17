@@ -209,6 +209,49 @@ async fn register_post(
 }
 
 
+#[post("/req_new_code")]
+async fn req_new_code(
+    pool: web::Data<MySqlPool>,
+    req: HttpRequest,
+    info: web::Json<NewCodeRequest>
+) -> HttpResponse {
+    // make sure user exists
+    // check old code for being expired
+
+    let user = match db::get_user_by_email(&pool, &info.email).await {
+        Ok(Some(user)) => user,
+        Ok(None) => return error_post_response(&req, 404),
+        Err(_e) => return error_post_response(&req, 500)
+    };
+
+    // user exists. See if there's already a code, and if enough time has elapsed
+    let existing_code_option: Option<auth::HashedVerificationCode> =
+        match db::get_verification_code(&pool, user.get_id()).await {
+            Ok(code_option) => code_option,
+            Err(_e) => return error_post_response(&req, 500)
+        };
+
+    if let Some(code_obj) = existing_code_option {
+        if !code_obj.can_request_new() {
+            let message: String = "You must wait one minute before requesting a new code.".to_string();
+            return HttpResponse::Ok().json(Message {message})
+        }
+    }
+
+    // NOW we can finally create a new verification code, and send verification email.
+    let email_sent: bool =
+        email::send_verification_email(&pool, user.get_username(), user.get_id(), &info.email).await;
+
+
+    if email_sent {
+        let message: String = "New code sent. Check your email.".to_string();
+        return HttpResponse::Ok().json(Message { message })
+    } else {
+        error_post_response(&req, 500)
+    }
+}
+
+
 /** LOGIN
  * Get user data, check it against the DB & see if it's right.
 */
@@ -890,6 +933,8 @@ pub async fn verify(
 ) -> HttpResponse {
     // It doesn't matter is user is already logged in. Must still verify email.
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+    let mut message: String = "Please enter your email and verification code.".to_string();
+    let mut request_new_code: bool = false;
 
     // Can user be verified by querystring input? If so, no remplate. Verify and redirect
     if query.code.is_some() && query.email.is_some() {
@@ -910,21 +955,27 @@ pub async fn verify(
                 };
 
             // get the saved, hashed verify code
-            let code_hash: String =
+            let code_hash_obj: auth::HashedVerificationCode =
                 match db::get_verification_code(&pool, user.get_id()).await {
-                    Ok(Some(hashed_code)) => hashed_code.code_hash,
+                    Ok(Some(code_hash_obj)) => code_hash_obj,
                     _ => break 'query_validation_block None
                 };
             
+            if code_hash_obj.has_exceeded_attempts() || code_hash_obj.is_expired() {
+                message = "Your code is no longer valid. You may request a new code.".to_string();
+                request_new_code = true;
+                break 'query_validation_block None
+            }
+
             // compare entered verify code to saved, hashed code, and return User if match.
-            let code_match: bool = auth::verify_password(&verify_code, &code_hash);
+            let code_match: bool = auth::verify_password(&verify_code, &code_hash_obj.code_hash);
 
             if code_match {
                 Some(user)
             } else {
                 // increment attemps and return None
-                let _new_attempts_count_result: Result<i32, anyhow::Error> =
-                    db::increment_verification_attempt(&pool, user.get_id()).await;
+                let _new_attempts_count_result: Result<auth::HashedVerificationCode, anyhow::Error> =
+                    db::increment_verification_attempt(&pool, user.get_id(), None).await;
                 None
             }
         };
@@ -954,6 +1005,8 @@ pub async fn verify(
     let verify_template: VerifyTemplate = VerifyTemplate {
         texts: VerifyTexts::new(&user_req_data),
         user: user_req_data,
+        message,
+        request_new_code
     };
 
     HttpResponse::Ok()

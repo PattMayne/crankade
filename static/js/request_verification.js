@@ -31,20 +31,32 @@ const show_msg_box = () => {
 async function request_new_code() {
     console.log("REQUESTING NEW CODE")
     const route = "/req_new_code"
-    let email = document.getElementById("email_req").value
-    let inputs = {
-        "email": email.toString()
+    const email = document.getElementById("email_req").value.toString().trim()
+
+    console.log("email: " + email)
+
+    const inputs = {
+        "email": email
     }
 
     await utils.fetch_json_post(route, inputs)
     .then(response => {
         if (!response.ok) {
             response.json().then(data => {
-                const msg = !!data.error && !!data.code ?
-                    "<h3>" + data.code + "</h3><p>" + data.error + "</p>" :
-                    "Error Occurred"
-                msgs.push(msg)
-                show_msg_box()
+
+                if (!!data.code && (data.code == 404 || data.code.toString().trim() == "404")) {
+                    const msg = "<h3>Email Address Not Found</h3>" +
+                        "<p>That address is not registered on our site. Try a different address, or " +
+                        "<a href='/auth/register'>Register.</a></p>"
+                    msgs.push(msg)
+                    show_msg_box()
+                } else {
+                    const msg = !!data.error && !!data.code ?
+                        "<h3>" + data.code + "</h3><p>" + data.error + "</p>" :
+                        "Error Occurred"
+                    msgs.push(msg)
+                    show_msg_box()
+                }
             })
 
             throw new Error("Inputs invalid or server error.")

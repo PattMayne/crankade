@@ -1681,11 +1681,13 @@ async fn check_refresh(
 ) -> HttpResponse {
 
     // Saving the err_response for possible later use
-    let err_response: HttpResponse = HttpResponse::Ok()
-        .json(RefreshCheckResponse::Err(RefreshCheckError {
-            error_code: 500,
-            message: "Server Error".to_string()
-        }));
+    let make_err_response = |code: u16, msg: &str| -> HttpResponse {
+        HttpResponse::Ok()
+            .json(RefreshCheckResponse::Err(RefreshCheckError {
+                error_code: code,
+                message: msg.to_string()
+            }))
+    };
 
     // get the inputs and check them all
 
@@ -1698,23 +1700,10 @@ async fn check_refresh(
             Ok(option) => {
                 match option {
                     Some(token) => token,
-                    None => {
-                        eprintln!("Did not find token");
-                        return HttpResponse::Ok()
-                            .json(RefreshCheckResponse::Err(RefreshCheckError {
-                                error_code: 500,
-                                message: "Did nto find token".to_string()
-                            }));
-                    }
+                    None => return make_err_response(404, "No token found")
                 }
-            }, Err(_e) => {
-                    eprintln!("Database error");
-                    return HttpResponse::Ok()
-                        .json(RefreshCheckResponse::Err(RefreshCheckError {
-                            error_code: 500,
-                            message: "Database Error".to_string()
-                        }));
-                }
+            },
+            Err(_e) => return make_err_response(500, "Database Error")
         };
 
     let token_is_valid: bool = 

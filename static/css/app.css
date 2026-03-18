@@ -56,11 +56,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /* FOUNDATION OVERRIDES */
 .callout.primary a {
-  color: #111111;
+  color: #0008dd;
 }
 
 .callout.primary a:hover {
-  color: #bdf000;
+  color: #c97c18;
 }
 
 .callout a,

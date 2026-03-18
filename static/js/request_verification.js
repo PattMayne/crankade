@@ -66,10 +66,7 @@ async function request_new_code() {
 
 document.addEventListener('DOMContentLoaded', () => hide_msg_box())
 document.getElementById('email').addEventListener(
-    'keydown', (e) => (e.key === 'Enter') && submit_login())
+    'keydown', (e) => (e.key === 'Enter') && request_new_code())
 document.getElementById('submit_btn').addEventListener(
     'click', () => request_new_code())
 
-// Make functions available to the HTML elements (via window)
-
-window.submit_login = submit_login

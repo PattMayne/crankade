@@ -83,6 +83,36 @@ impl HomeTexts {
     }
 }
 
+/**
+ * route: get "/request_verification"
+ */
+pub struct ReqVerificationTexts {
+    pub title: String,
+    pub message: String,
+    pub email: String,
+    pub submit_btn: String,
+    pub nav: NavTexts,
+}
+
+impl ReqVerificationTexts {
+    pub fn new(user_req_data: &UserReqData) -> ReqVerificationTexts {
+        let lang: &SupportedLangs = &user_req_data.lang;
+        let title: String = get_translation("reqver.title", lang, None);
+        let message: String = get_translation("reqver.message", lang, None);
+        let email: String = get_translation("reqver.email", lang, None);
+        let submit_btn: String = get_translation("reqver.submit_btn", lang, None);
+        let nav: NavTexts = NavTexts::new(lang);
+
+        ReqVerificationTexts {
+            title,
+            message,
+            email,
+            submit_btn,
+            nav
+        }
+    }
+}
+
 
 /**
  * route: get "/login"

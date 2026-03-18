@@ -33,7 +33,7 @@
 
                                     <h4>{{ texts.title }}</h4>
 
-                                    <label>
+                                    <label for="client_id">
                                         {{ texts.sites }}
                                         <select id="client_id" name="client_id">
                                             {% for client_ref in client_refs %}
@@ -47,7 +47,7 @@
                                         </select>
                                     </label>
 
-                                    <label>
+                                    <label for="username_or_email">
                                         {{ texts.username_email }}
                                         <input
                                             id="username_or_email"
@@ -55,13 +55,14 @@
                                             type="text" />
                                     </label>
 
-                                    <label>
+                                    <label for="password">
                                         {{ texts.password }}
                                         <input id="password" name="password" type="password" />
                                     </label>
 
                                     <a class="button small"
                                         onclick="submit_login()">{{ texts.login_btn }}</a>
+                                <p>Forgot your password? <a href="/auth/request_verification">Request Email Login</a>.</p>
                                 <p>Not a member yet? <a href="/auth/register{{querystring}}">Register.</a></p>
 
                                 {% else %}

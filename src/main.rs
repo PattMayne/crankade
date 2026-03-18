@@ -63,6 +63,7 @@ async fn main() -> std::io::Result<()> {
                 web::scope("/auth")
                     .route("/login", web::get().to(routes::login_page))
                     .route("/register", web::get().to(routes::register_page))
+                    .route("/request_verification", web::get().to(routes::request_verification_page))
                     .route("/", web::get().to(routes::auth_home))
                     .route("", web::get().to(routes::auth_home))
                     .service(routes::login_post)

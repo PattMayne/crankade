@@ -32,7 +32,7 @@ use crate::{
     resource_mgr::{
         HomeTexts, LoginTexts, RegisterTexts, AdminTexts, VerifyTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
-        ErrorData
+        ReqVerificationTexts, ErrorData
      },
      auth_code_shared::{
         AuthCodeSuccess,
@@ -1148,7 +1148,25 @@ async fn home(
     HttpResponse::Ok()
         .content_type("text/html")
         .body(home_template.render().unwrap())
- }
+}
+
+
+
+/* LOGIN PAGE ROUTE FUNCTION */
+pub async fn request_verification_page(
+    req: HttpRequest
+) -> HttpResponse {
+    let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+
+    let login_template: ReqVerificationTemplate = ReqVerificationTemplate {
+        texts: ReqVerificationTexts::new(&user_req_data),
+        user: user_req_data,
+    };
+
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(login_template.render().unwrap())
+}
 
 
 
@@ -1681,13 +1699,14 @@ async fn check_refresh(
 ) -> HttpResponse {
 
     // Saving the err_response for possible later use
-    let make_err_response = |code: u16, msg: &str| -> HttpResponse {
-        HttpResponse::Ok()
-            .json(RefreshCheckResponse::Err(RefreshCheckError {
-                error_code: code,
-                message: msg.to_string()
-            }))
-    };
+    let make_err_response =
+        |code: u16, msg: &str| -> HttpResponse {
+            HttpResponse::Ok()
+                .json(RefreshCheckResponse::Err(RefreshCheckError {
+                    error_code: code,
+                    message: msg.to_string()
+                }))
+        };
 
     // get the inputs and check them all
 

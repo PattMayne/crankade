@@ -122,6 +122,16 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
     "verify.message.en" => "Enter your email and your verification code.",
     "verify.message.fr" => "Saisissez votre adresse e-mail et votre code de vérification.",
 
+    // REQUEST VERIFICATION TEXTS
+    "reqver.title.en" => "Request Email Login",
+    "reqver.title.fr" => "Request Email Login",
+    "reqver.message.en" => "Request Email Login. Then you can verify your email and/or reset your password.",
+    "reqver.message.fr" => "Request Email Login. Then you can verify your email and/or reset your password.",
+    "reqver.email.en" => "Email Address",
+    "reqver.email.fr" => "Email Address",
+    "reqver.submit_btn.en" => "Submit",
+    "reqver.submit_btn.fr" => "Submit",
+
     // DEV BLOG
     "blog.title.en" => "DEVELOPER BLOG",
     "blog.title.fr" => "BLOG DU DÉVELOPPEUR",

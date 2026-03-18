@@ -35,7 +35,7 @@ use crate::{
     resource_mgr::{
         HomeTexts, LoginTexts, RegisterTexts, AdminTexts, BlogTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
-        NewPostTexts, EditPostTexts, VerifyTexts,
+        NewPostTexts, EditPostTexts, VerifyTexts, ReqVerificationTexts,
         ErrorData, error_by_code
      }
 };
@@ -412,6 +412,12 @@ pub struct BlogTemplate {
     pub posts: Vec<db::BlogPost>,
 }
 
+#[derive(Template)]
+#[template(path ="request_verification.html")]
+pub struct ReqVerificationTemplate {
+    pub texts: ReqVerificationTexts,
+    pub user: auth::UserReqData,
+}
 
 #[derive(Template)]
 #[template(path ="login.html")]

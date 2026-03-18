@@ -1679,6 +1679,8 @@ async fn check_refresh(
     pool: web::Data<MySqlPool>,
     inputs: web::Json<RefreshCheckRequest>
 ) -> HttpResponse {
+
+    // Saving the err_response for possible later use
     let err_response: HttpResponse = HttpResponse::Ok()
         .json(RefreshCheckResponse::Err(RefreshCheckError {
             error_code: 500,
@@ -1696,9 +1698,23 @@ async fn check_refresh(
             Ok(option) => {
                 match option {
                     Some(token) => token,
-                    None => return err_response
+                    None => {
+                        eprintln!("Did not find token");
+                        return HttpResponse::Ok()
+                            .json(RefreshCheckResponse::Err(RefreshCheckError {
+                                error_code: 500,
+                                message: "Did nto find token".to_string()
+                            }));
+                    }
                 }
-            }, Err(_e) => return err_response
+            }, Err(_e) => {
+                    eprintln!("Database error");
+                    return HttpResponse::Ok()
+                        .json(RefreshCheckResponse::Err(RefreshCheckError {
+                            error_code: 500,
+                            message: "Database Error".to_string()
+                        }));
+                }
         };
 
     let token_is_valid: bool = 

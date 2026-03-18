@@ -65,7 +65,7 @@ async function request_new_code() {
 // Add event listeners
 
 document.addEventListener('DOMContentLoaded', () => hide_msg_box())
-document.getElementById('email').addEventListener(
+document.getElementById('email_req').addEventListener(
     'keydown', (e) => (e.key === 'Enter') && request_new_code())
 document.getElementById('submit_btn').addEventListener(
     'click', () => request_new_code())

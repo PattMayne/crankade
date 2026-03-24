@@ -100,6 +100,7 @@ pub struct Claims {
     role: String,
     username: String,
     exp: usize, // expiration as a timestamp (seconds since epoch)
+    pub email_verified: bool,
 }
 
 pub enum JwtVerification {
@@ -144,6 +145,7 @@ pub struct UserReqData {
     pub role: String, // guest, player, admin
     pub logged_in: bool,
     pub lang: utils::SupportedLangs,
+    pub email_verified: bool,
 }
 
 
@@ -217,6 +219,7 @@ impl UserReqData {
                     role: claims.get_role().to_owned(),
                     logged_in: true,
                     lang: utils::SupportedLangs::English,
+                    email_verified: claims.email_verified
                 }
             },
             None => {
@@ -226,6 +229,7 @@ impl UserReqData {
                     role: String::from("guest"),
                     logged_in: false,
                     lang: utils::SupportedLangs::English,
+                    email_verified: false,
                 }
             }
         }
@@ -329,6 +333,7 @@ pub fn generate_jwt(
     user_id: i32,
     username: String,
     role: String,
+    email_verified: bool
     //secret: &[u8]
 ) -> Result<String, AuthError> {
     // Set expiration for 1 hour from now
@@ -337,9 +342,7 @@ pub fn generate_jwt(
 
     let claims: Claims = Claims {
         sub: user_id,
-        username,
-        role,
-        exp,
+        username, role, exp, email_verified
     };
 
     // Get JWT secret from env. Return err if missing.

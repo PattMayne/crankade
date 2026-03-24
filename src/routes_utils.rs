@@ -781,7 +781,8 @@ pub async fn get_user_auth_cookies(
     let jwt: String = match auth::generate_jwt(
         user.get_id(),
         user.get_username().to_owned(),
-        user.get_role().to_owned()
+        user.get_role().to_owned(),
+        user.get_email_verified()
     ) {
         Ok(token) => token,
         Err(e) => {

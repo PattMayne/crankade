@@ -1672,6 +1672,7 @@ async fn verify_auth_code(
         };
 
         let user_data: AuthCodeSuccess = AuthCodeSuccess {
+            email_verified: username_and_role.is_verified(),
             user_id: auth_code_data.user_id,
             username: username_and_role.username,
             user_role: username_and_role.role,

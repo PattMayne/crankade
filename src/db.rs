@@ -49,7 +49,7 @@ pub struct AuthCodeData {
     pub user_id: i32,
     pub client_id: String,
     pub code: String,
-    pub expires_timestamp: OffsetDateTime
+    pub expires_timestamp: OffsetDateTime,
 }
 
 #[derive(serde::Serialize)]
@@ -88,6 +88,13 @@ pub struct Username {
 pub struct UsernameAndRole {
     pub username: String,
     pub role: String,
+    pub email_verified: i8,
+}
+
+impl UsernameAndRole {
+    pub fn is_verified(&self) -> bool {
+        self.email_verified != 0
+    }
 }
 
 
@@ -453,7 +460,7 @@ pub async fn get_username_and_role_by_id(
 ) -> Result<Option<UsernameAndRole>> {
     Ok(sqlx::query_as!(
         UsernameAndRole,
-        "SELECT username, role FROM users WHERE id = ?",
+        "SELECT username, role, email_verified FROM users WHERE id = ?",
         id
     ).fetch_optional(pool).await?)
 }

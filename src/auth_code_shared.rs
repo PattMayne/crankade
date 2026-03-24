@@ -61,7 +61,6 @@ pub struct AuthCodeError {
     pub message: String,
 }
 
-
 /* Unified response type enum.
  * "untagged" means the data within the struct will be 
  * directly available (NOT within type: err or whatever).
@@ -118,3 +117,39 @@ impl RefreshCheckSuccess {
         RefreshCheckSuccess { is_valid }
     }
 }
+
+
+/* 
+ * 
+ * 
+ * 
+ * 
+ * ================================
+ * ================================
+ * =====                      =====
+ * =====  EMAIL VERIFICATION  =====
+ * =====                      =====
+ * ================================
+ * ================================
+ * 
+ * 
+ * 
+ * 
+*/
+
+
+#[derive(Serialize, Deserialize)]
+pub struct SendVerificationEmailRequest {
+    pub client_id: String,
+    pub client_secret: String,
+    pub username: String,
+    pub user_id: i32,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct SendVerificationEmailResponse {
+    pub success: bool,
+    pub message: String,
+    pub user_id: i32,
+}
+

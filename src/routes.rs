@@ -40,7 +40,9 @@ use crate::{
         RefreshCheckRequest,
         RefreshCheckError,
         RefreshCheckSuccess,
-        RefreshCheckResponse
+        RefreshCheckResponse,
+        SendVerificationEmailRequest,
+        SendVerificationEmailResponse,
     },
     routes_utils::{*},
     email
@@ -306,7 +308,7 @@ async fn req_new_code(
     // make sure user exists
     // check old code for being expired
 
-    let user = match db::get_user_by_email(&pool, &info.email).await {
+    let user: db::User = match db::get_user_by_email(&pool, &info.email).await {
         Ok(Some(user)) => user,
         Ok(None) => return error_post_response(&req, 404),
         Err(_e) => return error_post_response(&req, 500)
@@ -433,7 +435,7 @@ async fn req_secret_post(
         raw_client_secret: utils::generate_client_secret()
     };
 
-    let hashed_client_secret = auth::hash_password(
+    let hashed_client_secret: String = auth::hash_password(
        raw_client_secret_json.raw_client_secret.to_owned()
     ).to_owned();
 
@@ -1735,4 +1737,89 @@ async fn check_refresh(
 
     return HttpResponse::Ok()
         .json(token_response);
+}
+
+
+
+/**
+ * when a user on a client app checks their refresh_token (in the cookies on the client app)
+ * against the refresh token saved in the database.
+ */
+#[post("/req_ver_email")]
+async fn req_ver_email(
+    pool: web::Data<MySqlPool>,
+    inputs: web::Json<SendVerificationEmailRequest>
+) -> HttpResponse {
+
+    // Saving the err_response for possible later use
+    let make_response =
+        |msg: &str, success: bool| -> HttpResponse {
+            HttpResponse::Ok()
+                .json(SendVerificationEmailResponse {
+                    success: success,
+                    message: msg.to_string(),
+                    user_id: inputs.user_id
+                })
+        };
+
+    // make sure the client secret matches the client id
+    // get the email address (and username) from user_id
+    // send email with send_verification_email
+    // return response
+    // We should ALWAYS return the same kind of struct (SendVerificationEmailResponse)
+
+    // Get hashed_client_secret from database
+    let stored_hash: String = match db::get_client_secret(&pool, &inputs.client_id).await {
+        Ok(Some(client_data)) => client_data.hashed_client_secret,
+        Ok(None) => return make_response("No client found with that ID", false),
+        Err(e) => {
+            eprintln!("Database Error: {}", e.to_string());
+            return make_response("Database error", false)
+        }
+    };
+
+    // make sure hashes match 
+    if !auth::verify_password(&inputs.client_secret, &stored_hash) {
+        return make_response("Client secret does not match", false)
+    }
+
+    // get email address
+    let user: db::User = match db::get_user_by_id(&pool, inputs.user_id).await {
+        Ok(Some(user)) => user,
+        Ok(None) => return make_response("No user with that id", false),
+        Err(e) => {
+            eprintln!("Database Error: {}", e.to_string());
+            return make_response("Database error", false)
+        }
+    };
+
+    // making sure the provided username matches that in the DB (not randomly sending user_ids)
+    if user.get_username() != &inputs.username {
+        println!("usernames: {}, {}", user.get_username(), inputs.username);
+        return make_response("User id does not match username", false)
+    }
+
+    // user exists. See if there's already a code, and if enough time has elapsed
+    let existing_code_option: Option<auth::HashedVerificationCode> =
+        match db::get_verification_code(&pool, user.get_id()).await {
+            Ok(code_option) => code_option,
+            Err(_e) => return make_response("Database error", false)
+        };
+
+    if let Some(code_obj) = existing_code_option {
+        if !code_obj.can_request_new() {
+            let message: &str = "You must wait one minute before requesting a new code.";
+            return make_response(message, false)
+        }
+    }
+
+    let email: &String = user.get_email();
+    let email_sent: bool = email::send_verification_email(
+        &pool, user.get_username(), user.get_id(), email).await;
+
+    if email_sent {
+        make_response("Email sent. Check your inbox for verification code and link.", true)
+    } else {
+        make_response("Email failed to send.", false)
+    }
 }

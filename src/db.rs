@@ -821,7 +821,7 @@ pub async fn add_external_client(
     pool: &MySqlPool,
     new_client_data: NewClientData
 ) -> Result<u64, anyhow::Error> {
-    println!("In the DB to add a NEW CLIENT SITE!!!!!");
+    println!("In the DB to add a NEW CLIENT SITE!");
 
     // We trust that the data has already been checked. We simply enter it like obedient robots now.
     // Except that we will turn the bool into an int.

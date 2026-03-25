@@ -155,7 +155,7 @@ pub async fn verify_post(
         };
     
     if code_hash_obj.has_exceeded_attempts() {
-        let message = "You did that too many times. Please wait one minute before requesting a new code.".to_string();
+        let message: String = "Please wait two minutes before requesting a new code.".to_string();
         let error_struct: ErrorResponse = ErrorResponse { error: message, code: 429 };
         return HttpResponse::TooManyRequests().json(error_struct)
     } else if code_hash_obj.is_expired() {
@@ -323,7 +323,7 @@ async fn req_new_code(
 
     if let Some(code_obj) = existing_code_option {
         if !code_obj.can_request_new() {
-            let message: String = "You must wait one minute before requesting a new code.".to_string();
+            let message: String = "You must wait two minutes before requesting a new code.".to_string();
             return HttpResponse::Ok().json(Message {message})
         }
     }
@@ -1160,10 +1160,11 @@ pub async fn request_verification_page(
 ) -> HttpResponse {
     let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
 
-    let login_template: ReqVerificationTemplate = ReqVerificationTemplate {
-        texts: ReqVerificationTexts::new(&user_req_data),
-        user: user_req_data,
-    };
+    let login_template: ReqVerificationTemplate =
+        ReqVerificationTemplate {
+            texts: ReqVerificationTexts::new(&user_req_data),
+            user: user_req_data,
+        };
 
     HttpResponse::Ok()
         .content_type("text/html")
@@ -1808,7 +1809,7 @@ async fn req_ver_email(
 
     if let Some(code_obj) = existing_code_option {
         if !code_obj.can_request_new() {
-            let message: &str = "You must wait one minute before requesting a new code.";
+            let message: &str = "You must wait two mintues before requesting a new code.";
             return make_response(message, false)
         }
     }

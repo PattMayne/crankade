@@ -1,6 +1,6 @@
 # CRANKADE
 
-Like and ARCADE for CRANKS.
+Like an ARCADE for CRANKS.
 CRANKADE is the authentication app I use to serve my web apps and games. So if I have multiple apps, a user won't need an account on each one. It provides streamlined authentication services to multiple sites.
 I use JSON webtokens (JWTs), reinforced by refresh_tokens. The JWTs are created locally on the client site, the refresh tokens are created on the auth site and stored in a database.
 

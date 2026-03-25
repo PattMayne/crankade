@@ -73,7 +73,7 @@ pub async fn send_verification_email(
 
     let resend: Resend = Resend::new(&resend_api);
 
-    let from: &str = "noreply@mail.crankade.com";
+    let from: &str = "Crankade Admin <noreply@mail.crankade.com>";
     let to: [&str; 1] = [email_address];
     let subject: &str = "Welcome to Crankade!";
 

@@ -1751,7 +1751,7 @@ async fn req_ver_email(
     inputs: web::Json<SendVerificationEmailRequest>
 ) -> HttpResponse {
 
-    // Saving the err_response for possible later use
+    // Saving the response function for later use
     let make_response =
         |msg: &str, success: bool| -> HttpResponse {
             HttpResponse::Ok()

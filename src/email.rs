@@ -1,8 +1,20 @@
 use resend_rs::types::CreateEmailBaseOptions;
 use resend_rs::{ Resend };
 use sqlx::{ MySqlPool };
+use askama::Template;
 
 use crate::{ db, auth };
+
+
+
+#[derive(Template)]
+#[template(path ="verification_email.html")]
+struct VerifyEmailTemplate {
+    pub username: String,
+    pub code: String,
+    pub link: String,
+}
+
 
 
 pub async fn send_verification_email(
@@ -29,17 +41,13 @@ pub async fn send_verification_email(
             email_address, &new_verification_code.raw_code
     );
 
-    // TODO: create email template (askama). Use inline CSS.
-    let email_body: String =
-    format!(
-        "<h3>Welcome to Crankade, {}!</h3><br>
-            <p>Your verification code is {}. 
-            It expires in five minutes.</p>
-            <p>Or follow <a href='{}'>this link.</a>",
-        username,
-        new_verification_code.raw_code,
-        verification_link
-    );
+    let template: VerifyEmailTemplate = VerifyEmailTemplate {
+        username: username.to_string(),
+        link: verification_link,
+        code: new_verification_code.raw_code
+    };
+
+    let email_body: String = template.render().unwrap();
 
     // PROCESS:
     // 2. create verification route

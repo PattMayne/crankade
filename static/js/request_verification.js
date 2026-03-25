@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => hide_msg_box())
 
 document.getElementById('email_req').addEventListener(
     'keydown', (e) => {
-        preventDefault()
+        e.preventDefault()
         (e.key === 'Enter') &&  request_new_code()
     })
 

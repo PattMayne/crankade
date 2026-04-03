@@ -192,16 +192,10 @@ h1 {
  * 
  * 
 */
-.client_link_callout_backup {
-  display: inline-block;
-  width: auto;
-  margin-right: 5px;
-  text-align: center;
-  vertical-align: top;
-}
-
 .client_link_callout {
   width: 100%;
+  margin-right: 5px;
+  margin-bottom: 5px;
   text-align: center;
   vertical-align: top;
 }

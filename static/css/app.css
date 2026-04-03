@@ -197,6 +197,7 @@ h1 {
   width: auto;
   margin-right: 5px;
   text-align: center;
+  vertical-align: top;
 }
 
 .client_link_desc {

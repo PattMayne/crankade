@@ -23,10 +23,16 @@
 
                 <div class="callout primary">
                     <h5>{{ texts.edit_clients_label }}</h5>
-                    {% for client_ref in client_refs  %}
+                    {% for client_ref in client_refs %}
                         <a
                         href="/admin/edit_client/{{ client_ref.client_id }}"
-                        class="button small"
+                        class="button small {% if client_ref.get_is_internal() %}
+                        client_ref_btn_internal
+                        {% else if client_ref.get_is_active() %}
+                        client_ref_btn_active
+                        {% else %}
+                        client_ref_btn_inactive
+                        {% endif %}"
                         >{{ client_ref.name }}</a>
                     {% endfor %}
                     <hr/>

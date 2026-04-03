@@ -187,6 +187,8 @@ pub struct ClientRef {
     pub client_id: String,
     pub name: String,
     pub logo_url: String,
+    is_active: i8,
+    is_internal: i8,
 }
 
 
@@ -200,6 +202,13 @@ impl ClientData {
     pub fn get_is_active(&self) -> bool { self.is_active == 1 }
     pub fn get_is_internal(&self) -> bool { self.is_internal == 1 }
 }
+
+
+impl ClientRef {
+    pub fn get_is_active(&self) -> bool { self.is_active == 1 }
+    pub fn get_is_internal(&self) -> bool { self.is_internal == 1 }
+}
+
 
 
 impl BlogPost {
@@ -506,7 +515,8 @@ pub async fn get_refresh_token(
 pub async fn get_client_refs(pool: &MySqlPool) -> Result<Vec<ClientRef>> {
     let client_refs: Vec<ClientRef> = sqlx::query_as!(
         ClientRef,
-        "SELECT client_id, name, logo_url FROM client_sites"
+        "SELECT client_id, name, logo_url, is_active, is_internal 
+        FROM client_sites ORDER BY is_active DESC"
     ).fetch_all(pool).await?;
 
     Ok(client_refs)

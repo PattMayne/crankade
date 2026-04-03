@@ -6,6 +6,10 @@
 */
 /* CUSTOM FONTS */
 @font-face {
+  font-family: ander-hedge;
+  src: url(../fonts/ander_hedge.ttf);
+}
+@font-face {
   font-family: nue-gothic-reg;
   src: url(../fonts/nue-gothic-reg.ttf);
 }
@@ -49,8 +53,13 @@ body label {
   color: #f0f0f0;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h2, h3, h4, h5, h6 {
   font-family: nue-gothic-round;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-family: ander-hedge;
   text-transform: uppercase;
 }
 
@@ -190,6 +199,10 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
 }
 
+.client_link_desc {
+  max-width: 225px;
+}
+
 .client_link_logo {
   width: 175px;
   max-width: 100%;
@@ -224,6 +237,22 @@ h1, h2, h3, h4, h5, h6 {
 #post_body {
   width: 50ch;
   height: 500px;
+}
+
+/*  ADMIN PAGES  */
+.client_ref_btn_inactive {
+  color: #f0f0f0;
+  background-color: #c97c18;
+}
+
+.client_ref_btn_internal {
+  color: #f0f0f0;
+  background-color: #423841;
+}
+
+.client_ref_btn_active {
+  color: #f0f0f0;
+  background-color: #248232;
 }
 
 /*# sourceMappingURL=app.css.map */

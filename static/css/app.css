@@ -247,7 +247,7 @@ h1 {
 
 .client_ref_btn_internal {
   color: #f0f0f0;
-  background-color: #423841;
+  background-color: rgb(203, 0, 0);
 }
 
 .client_ref_btn_active {

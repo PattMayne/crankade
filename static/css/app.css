@@ -261,4 +261,54 @@ h1 {
   background-color: #248232;
 }
 
+/* 
+ * 
+ * 
+ * 
+ * 
+ * ===========================
+ * ===========================
+ * =====                 =====
+ * =====  ANDROID STUFF  =====
+ * =====                 =====
+ * ===========================
+ * ===========================
+ * 
+ * 
+ * 
+ * 
+*/
+.callout.android_callout p,
+.callout.android_callout h1,
+.callout.android_callout h2,
+.callout.android_callout h3,
+.callout.android_callout h4,
+.callout.android_callout h5,
+.callout.android_callout h6 {
+  color: #d6d6d6;
+}
+
+.callout.android_callout a {
+  color: #248232;
+}
+
+.callout.android_callout a:hover {
+  color: #1A6025;
+}
+
+.callout.android_callout {
+  border: 1px solid #423841;
+  background-color: #111111;
+  color: #d6d6d6;
+}
+
+.callout.android_callout label {
+  color: #d6d6d6;
+}
+
+.android_icon {
+  width: 100px;
+  height: 100px;
+}
+
 /*# sourceMappingURL=app.css.map */

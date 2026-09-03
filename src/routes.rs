@@ -28,7 +28,7 @@ use crate::resource_mgr::{AgreementTexts, BlogTexts, NewPostTexts, EditPostTexts
 // local modules, loaded as crates (declared as mods in main.rs)
 use crate::{
     resources::get_translation,
-    db, utils, auth,
+    db, utils, auth, android_apps::{*},
     resource_mgr::{
         HomeTexts, LoginTexts, RegisterTexts, AdminTexts, VerifyTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
@@ -1140,10 +1140,13 @@ async fn home(
             }
         };
 
+
+
     let home_template: HomeTemplate = HomeTemplate {
         texts: HomeTexts::new(&user_req_data),
         user: user_req_data,
         pinned_post,
+        android_apps: get_android_apps_data(),
         client_links
     };
 
@@ -1164,7 +1167,7 @@ async fn android_apps_page(
     let android_template: AndroidAppsTemplate = AndroidAppsTemplate {
         texts: AndroidAppsTexts::new(&user_req_data),
         user: user_req_data,
-        is_vertical: false,
+        android_apps: get_android_apps_data()
     };
 
     HttpResponse::Ok()

@@ -1,0 +1,49 @@
+<!--
+
+    This is a list of android apps to be included in a main page.
+    
+
+
+-->
+
+
+<!--
+
+    NOTE: when we get to more than two items,
+    stack items within cells as columns so we don't get those weird 
+    staggered spaces that happen whith callouts of uneven height.
+    I did that with JavaScript before, but I think we can do it
+    with the askama template somehow.
+
+-->
+
+{% for app in android_apps %}
+    <div class="large-4 medium-6 small-12 cell">
+        <div class="callout android_callout">
+
+            <div class="grid-container">
+                <div class="grid-x">
+                    <div class="large-12 cell">
+                        <img src="/static/img/{{app.image_filename}}" class="android_icon">
+                    </div>
+                    <div class="large-12 cell">
+                        <h2>{{ app.title }}</h2>
+                    </div>
+                    <div class="large-12 cell">
+                        <p>{{ app.description }}</p>
+                    </div>
+                    {% for link in app.download_links %}
+                        <div class="large-12 cell">
+                            <a href="{{ link.url }}" class="button">{{ link.title }}</a>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="large-12 cell">
+                    <a href="{{ app.privay_url }}" target="_blank">Privacy Policy</a>
+                </div>
+            </div>  
+
+        </div>
+
+    </div>
+{% endfor %}

@@ -29,7 +29,7 @@ use crate::db::BlogPost;
 use crate::resource_mgr::AgreementTexts;
 // local modules, loaded as crates (declared as mods in main.rs)
 use crate::{
-    db, utils,
+    db, utils, android_apps::{ AndroidAppData },
     auth::{ self, UserReqData },
     resources::get_translation,
     resource_mgr::{
@@ -39,6 +39,7 @@ use crate::{
         AndroidAppsTexts, ErrorData, error_by_code
      }
 };
+
 
 
 /* 
@@ -62,7 +63,6 @@ use crate::{
  * 
  * 
 */
-
 
 #[derive(Serialize)]
 pub struct BlogPostSuccess {
@@ -387,6 +387,7 @@ pub struct TwoAuthCookies {
 pub struct HomeTemplate {
     pub texts: HomeTexts,
     pub user: auth::UserReqData,
+    pub android_apps: Vec<AndroidAppData>,
     pub client_links: Vec<db::ClientLinkData>,
     pub pinned_post: Option<String>,
 }
@@ -414,11 +415,11 @@ pub struct BlogTemplate {
 
 
 #[derive(Template)]
-#[template(path ="android_apps.html")]
+#[template(path ="android_apps_page.html")]
 pub struct AndroidAppsTemplate {
     pub texts: AndroidAppsTexts,
     pub user: auth::UserReqData,
-    pub is_vertical: bool,
+    pub android_apps: Vec<AndroidAppData>,
 }
 
 

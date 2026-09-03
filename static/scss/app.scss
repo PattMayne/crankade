@@ -131,6 +131,7 @@ h1{
 }
 
 
+
 .callout {
     background-color: $pastel-blue;
     color: $white;
@@ -323,4 +324,60 @@ h1{
 .client_ref_btn_active {
   color: $white;
   background-color: $forest-green;
+}
+
+
+
+
+/* 
+ * 
+ * 
+ * 
+ * 
+ * ===========================
+ * ===========================
+ * =====                 =====
+ * =====  ANDROID STUFF  =====
+ * =====                 =====
+ * ===========================
+ * ===========================
+ * 
+ * 
+ * 
+ * 
+*/
+
+
+.callout.android_callout p,
+.callout.android_callout h1,
+.callout.android_callout h2,
+.callout.android_callout h3,
+.callout.android_callout h4,
+.callout.android_callout h5,
+.callout.android_callout h6 {
+  color: $timberwolf;
+}
+
+.callout.android_callout a {
+  color: $forest-green;
+}
+
+.callout.android_callout a:hover {
+  color: $dartmouth-green;
+}
+
+
+.callout.android_callout {
+  border: 1px solid $jet;
+  background-color: $black;
+  color: $timberwolf;
+}
+
+.callout.android_callout label {
+  color: $timberwolf;
+}
+
+.android_icon {
+  width: 100px;
+  height: 100px;
 }

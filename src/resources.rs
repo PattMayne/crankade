@@ -41,6 +41,10 @@ pub static TRANSLATIONS: phf::Map<&'static str, &'static str> = phf_map! {
     "home.greeting.en" => "Hello, {0}!",
     "home.greeting.fr" => "Bonjour, {0}!",
 
+    // ANDROID PAGE
+    "android.title.fr" => "APPS ANDROID",
+    "android.title.en" => "ANDROID APPS",
+
     // DASHBOARD PAGE
     "dash.title.fr" => "TABLEAU DE BORD",
     "dash.title.en" => "DASHBOARD",

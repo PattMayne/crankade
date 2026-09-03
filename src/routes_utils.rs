@@ -36,7 +36,7 @@ use crate::{
         HomeTexts, LoginTexts, RegisterTexts, AdminTexts, BlogTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
         NewPostTexts, EditPostTexts, VerifyTexts, ReqVerificationTexts,
-        ErrorData, error_by_code
+        AndroidAppsTexts, ErrorData, error_by_code
      }
 };
 
@@ -403,7 +403,6 @@ pub struct VerifyTemplate {
 
 
 
-
 #[derive(Template)]
 #[template(path ="dev_blog.html")]
 pub struct BlogTemplate {
@@ -412,12 +411,24 @@ pub struct BlogTemplate {
     pub posts: Vec<db::BlogPost>,
 }
 
+
+
+#[derive(Template)]
+#[template(path ="android_apps.html")]
+pub struct AndroidAppsTemplate {
+    pub texts: AndroidAppsTexts,
+    pub user: auth::UserReqData,
+    pub is_vertical: bool,
+}
+
+
 #[derive(Template)]
 #[template(path ="request_verification.html")]
 pub struct ReqVerificationTemplate {
     pub texts: ReqVerificationTexts,
     pub user: auth::UserReqData,
 }
+
 
 #[derive(Template)]
 #[template(path ="login.html")]
@@ -429,6 +440,7 @@ pub struct LoginTemplate {
     pub selected_client_id: String,
     pub querystring: String,
 }
+
 
 #[derive(Template)]
 #[template(path ="admin_page.html")]

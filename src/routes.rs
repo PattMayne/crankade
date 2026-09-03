@@ -32,7 +32,7 @@ use crate::{
     resource_mgr::{
         HomeTexts, LoginTexts, RegisterTexts, AdminTexts, VerifyTexts,
         ErrorTexts, EditClientTexts, NewClientTexts, DashboardTexts,
-        ReqVerificationTexts, ErrorData
+        AndroidAppsTexts,ReqVerificationTexts, ErrorData
      },
      auth_code_shared::{
         AuthCodeSuccess,
@@ -1150,6 +1150,26 @@ async fn home(
     HttpResponse::Ok()
         .content_type("text/html")
         .body(home_template.render().unwrap())
+}
+
+
+
+/* ANDROID APPS PAGE */
+#[get("/android")]
+async fn android_apps_page(
+    req: HttpRequest
+) -> HttpResponse {
+    let user_req_data: auth::UserReqData = auth::get_user_req_data(&req);
+
+    let android_template: AndroidAppsTemplate = AndroidAppsTemplate {
+        texts: AndroidAppsTexts::new(&user_req_data),
+        user: user_req_data,
+        is_vertical: false,
+    };
+
+    HttpResponse::Ok()
+        .content_type("text/html")
+        .body(android_template.render().unwrap())
 }
 
 

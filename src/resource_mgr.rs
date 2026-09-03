@@ -336,6 +336,30 @@ impl BlogTexts {
 }
 
 
+/**
+ * route: get "/android"
+ */
+pub struct AndroidAppsTexts {
+    pub title: String,
+    pub nav: NavTexts
+}
+
+impl AndroidAppsTexts {
+    pub fn new(user_req_data: &UserReqData) -> AndroidAppsTexts {
+        let lang: &SupportedLangs = &user_req_data.lang;
+        let title: String = get_translation("android.title", lang, None);
+        let nav: NavTexts = NavTexts::new(lang);
+
+        AndroidAppsTexts {
+            title,
+            nav
+        }
+    }
+}
+
+
+
+
 
 /**
  * route: get "/admin/new_client"

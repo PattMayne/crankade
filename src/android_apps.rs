@@ -47,7 +47,7 @@ pub fn get_android_apps_data() -> Vec<AndroidAppData> {
 
     let cribbage_matrix_data: AndroidAppData = AndroidAppData {
         title: "Cribbage Matrix".to_string(),
-        description: "Use Cribbage rules to score points with combinations on the board.".to_string(),
+        description: "Use Cribbage rules to score points with combinations on the board. It's like Cribbage meets Scrabble!".to_string(),
         download_links: cribbage_matrix_links,
         image_filename: "cribbage_matrix_icon.png".to_string(),
         privay_url: cribbage_matrix_privacy_url,

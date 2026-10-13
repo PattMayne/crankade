@@ -24,7 +24,7 @@ pub fn get_android_apps_data() -> Vec<AndroidAppData> {
 
     let crankword_privacy_url: String = "/static/crankword_privacy_policy.html".to_string();
 
-    let crawnkword_data: AndroidAppData = AndroidAppData {
+    let _crankword_data: AndroidAppData = AndroidAppData {
         title: "Crankword".to_string(),
         description: "A word-guessing game.".to_string(),
         download_links: crankword_links,
@@ -47,7 +47,7 @@ pub fn get_android_apps_data() -> Vec<AndroidAppData> {
 
     let cribbage_matrix_data: AndroidAppData = AndroidAppData {
         title: "Cribbage Matrix".to_string(),
-        description: "Use Cribbage rules to score points with combinations on the board. It's like Cribbage meets Scrabble!".to_string(),
+        description: "Use Cribbage rules to score points with combinations on the board.\nIt's like Cribbage meets Scrabble!".to_string(),
         download_links: cribbage_matrix_links,
         image_filename: "cribbage_matrix_icon.png".to_string(),
         privay_url: cribbage_matrix_privacy_url,

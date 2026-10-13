@@ -39,7 +39,7 @@ pub fn get_android_apps_data() -> Vec<AndroidAppData> {
     let cribbage_matrix_links: Vec<Link> = vec![
         Link {
             url: "https://play.google.com/store/apps/details?id=com.crankade.cribbagematrix".to_string(),
-            title: "Download on Google Play".to_string(),
+            title: "Google Play".to_string(),
         },
     ];
 

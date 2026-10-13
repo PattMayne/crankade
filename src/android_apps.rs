@@ -38,8 +38,8 @@ pub fn get_android_apps_data() -> Vec<AndroidAppData> {
 
     let cribbage_matrix_links: Vec<Link> = vec![
         Link {
-            url: "#".to_string(),
-            title: "COMING SOON!".to_string(),
+            url: "https://play.google.com/store/apps/details?id=com.crankade.cribbagematrix".to_string(),
+            title: "Download on Google Play".to_string(),
         },
     ];
 
@@ -54,7 +54,6 @@ pub fn get_android_apps_data() -> Vec<AndroidAppData> {
     };
 
     vec![
-        crawnkword_data,
         cribbage_matrix_data
     ]
 }

@@ -30,7 +30,7 @@
                         <h2>{{ app.title }}</h2>
                     </div>
                     <div class="large-12 cell">
-                        <p>{{ app.description }}</p>
+                        <p>{{ app.description | safe }}</p>
                     </div>
                     {% for link in app.download_links %}
                         <div class="large-12 cell">
